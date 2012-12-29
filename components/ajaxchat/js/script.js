@@ -51,7 +51,7 @@ function get_userlist()
 	var users = jQuery.parseJSON(json);
 	if(!users)
 	{
-	  alert("Получены неверные данные");
+	  alert("ГЏГ®Г«ГіГ·ГҐГ­Г» Г­ГҐГўГҐГ°Г­Г»ГҐ Г¤Г Г­Г­Г»ГҐ");
 	}
 	else
 	{
@@ -82,7 +82,7 @@ function get_messages()
       var messages = jQuery.parseJSON(json);
       if(!messages)
       {
-	alert("Получены неверные данные");
+	alert("ГЏГ®Г«ГіГ·ГҐГ­Г» Г­ГҐГўГҐГ°Г­Г»ГҐ Г¤Г Г­Г­Г»ГҐ");
       }
       else
       {
@@ -300,7 +300,7 @@ function formatMessage(mess)
   }
   else
   {
-    var str = "<li id=\"mess_"+mess.id+"\"><tt>"+mess.time+"</tt> <b onClick=addLogin('"+mess.login+"')>"+mess.nickname+"</b> для <b onClick=addLogin('"+mess.to_login+"')>"+mess.to_nickname+"</b>:"+mess.message+"</li>";  
+    var str = "<li id=\"mess_"+mess.id+"\"><tt>"+mess.time+"</tt> <b onClick=addLogin('"+mess.login+"')>"+mess.nickname+"</b> Г¤Г«Гї <b onClick=addLogin('"+mess.to_login+"')>"+mess.to_nickname+"</b>:"+mess.message+"</li>";  
   }
   return str;
 }
@@ -323,7 +323,7 @@ function getDialogs()
       }
       else
       {
-	$("#dialogLineHolder UL").append("Диалоги отсутствуют. Для начала диалога напишите кому либо личное сообщение");
+	$("#dialogLineHolder UL").append("Г„ГЁГ Г«Г®ГЈГЁ Г®ГІГ±ГіГІГ±ГІГўГіГѕГІ. Г„Г«Гї Г­Г Г·Г Г«Г  Г¤ГЁГ Г«Г®ГЈГ  Г­Г ГЇГЁГёГЁГІГҐ ГЄГ®Г¬Гі Г«ГЁГЎГ® Г«ГЁГ·Г­Г®ГҐ Г±Г®Г®ГЎГ№ГҐГ­ГЁГҐ");
       }
     }
   });  
@@ -385,6 +385,6 @@ function loadUser(id)
   if(active_user == id)
   {
     $(".userinfo").remove();    
-    $("#chatuser_"+id).append("<div class=\"userinfo\"><div onClick=\"loadDialog("+id+")\">написать личное сообщение</div></div>")
+    $("#chatuser_"+id).append("<div class=\"userinfo\"><div onClick=\"loadDialog("+id+")\">Г­Г ГЇГЁГ±Г ГІГј Г«ГЁГ·Г­Г®ГҐ Г±Г®Г®ГЎГ№ГҐГ­ГЁГҐ</div></div>")
   }
 }

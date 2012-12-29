@@ -96,7 +96,6 @@ class cms_model_ajaxchat
     $output = array();
     while ($row = $this->inDB->fetch_assoc($result))
     {
-      $row['nickname'] = iconv("cp1251","utf8",$row['nickname']);
       if($row['user_id'] == $this->inUser->id)
       {
 	$row['active'] = TRUE;
@@ -160,14 +159,12 @@ class cms_model_ajaxchat
     $output = array();
     while ($row = $this->inDB->fetch_assoc($result))
     {
-      $row['nickname'] = iconv("cp1251","utf8",$row['nickname']);
-      $row['message'] = iconv("cp1251","utf8",$row['message']);
       $row['time'] = substr($row['time'],10);
       
       if($row['to_id'])
       {
 	$to = $this->getUserByID($row['to_id']);
-	$row['to_nickname'] = iconv("cp1251","utf8",$to['nickname']);
+	$row['to_nickname'] = $to['nickname'];
 	$row['to_login'] = $to['login'];
       }      
       $output[] = $row;
@@ -211,8 +208,6 @@ class cms_model_ajaxchat
     $output = array();
     while ($row = $this->inDB->fetch_assoc($result))
     {
-      $row['nickname'] = iconv("cp1251","utf8",$row['nickname']);
-      $row['message'] = iconv("cp1251","utf8",$row['message']);
       $row['time'] = substr($row['time'],10);
       if($row['to_id'] == $this->inUser->id)
       {
@@ -225,7 +220,7 @@ class cms_model_ajaxchat
       if($row['to_id'])
       {
 	$to = $this->getUserByID($row['to_id']);
-	$row['to_nickname'] = iconv("cp1251","utf8",$to['nickname']);
+	$row['to_nickname'] = $to['nickname'];
 	$row['to_login'] = $to['login'];
       }
       $output[] = $row;
@@ -366,7 +361,7 @@ class cms_model_ajaxchat
       $output = array();
       $output['id'] = "0";
       $output['login'] = false;
-      $output['nickname'] = "Ñëóæáà îáíîâëåíèé";
+      $output['nickname'] = "Ð¡Ð»ÑƒÐ¶Ð±Ð° Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ð¹";
       $output['imageurl'] = "/images/messages/update.jpg";
       $output['is_online'] = "1";
       return $output;
@@ -423,7 +418,6 @@ class cms_model_ajaxchat
     
     while ($row = $this->inDB->fetch_assoc($result))
     {
-      $row["message"] = iconv("cp1251","utf8",$row['message']);
       $output[] = $row;
     }
     return $output;

@@ -19,10 +19,10 @@ function ajaxchat()
     {
       if(!$model->isBanned($inUser->id) or $inUser->is_admin)
       {
-	$inPage->setTitle("×àò");
+	$inPage->setTitle("Ð§Ð°Ñ‚");
 	if(!$model->CheckOnline($inUser->id))
 	{
-	  $model->addMessage(0,0,"Ê ÷àòó ïðèñîåäèíÿåòñÿ ".$inUser->nickname);
+	  $model->addMessage(0,0,"Ðš Ñ‡Ð°Ñ‚Ñƒ Ð¿Ñ€Ð¸ÑÐ¾ÐµÐ´Ð¸Ð½ÑÐµÑ‚ÑÑ ".$inUser->nickname);
 	}
 	$model->UpdateOnlineList($inUser->id);
 	$smarty = $inCore->initSmarty('components', 'com_ajaxchat_view.tpl');
@@ -30,14 +30,14 @@ function ajaxchat()
       }
       else
       {
-	cmsCore::addSessionMessage('Âû çàáàíåíû â ÷àòå', 'error');
+	cmsCore::addSessionMessage('Ð’Ñ‹ Ð·Ð°Ð±Ð°Ð½ÐµÐ½Ñ‹ Ð² Ñ‡Ð°Ñ‚Ðµ', 'error');
 	$inCore->redirect("/users/".$inUser->login);
       }
       return;
     }
     else
     {
-      cmsCore::addSessionMessage('Äëÿ âõîäà â ÷àò íåîáõîäèìî çàéòè íà ñàéò', 'error');
+      cmsCore::addSessionMessage('Ð”Ð»Ñ Ð²Ñ…Ð¾Ð´Ð° Ð² Ñ‡Ð°Ñ‚ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ð¾ Ð·Ð°Ð¹Ñ‚Ð¸ Ð½Ð° ÑÐ°Ð¹Ñ‚', 'error');
       $inCore->redirect("/login");
     }
   }
@@ -81,7 +81,7 @@ function ajaxchat()
   {
     if($inUser->id)
     {
-      $message = iconv("utf8","cp1251",$inCore->request('message', 'html',''));
+      $message = $inCore->request('message', 'html','');
       $id = $inCore->request('id', 'str');
       if($id == "chatrum")
       {
@@ -113,7 +113,7 @@ function ajaxchat()
 	      if($user and $user['id'] != $inUser->id)
 	      {
 		$model->addToBan($user['id']);
-		$model->addMessage(0,0,"Àäìèíèñòðàòîð çàáàíèë ".$user['nickname']);
+		$model->addMessage(0,0,"ÐÐ´Ð¼Ð¸Ð½Ð¸ÑÑ‚Ñ€Ð°Ñ‚Ð¾Ñ€ Ð·Ð°Ð±Ð°Ð½Ð¸Ð» ".$user['nickname']);
 	      }
 	    }
 	    unset($message);
@@ -128,7 +128,7 @@ function ajaxchat()
 	      if($user and $user['id'] != $inUser->id)
 	      {
 		$model->removeFromBan($user['id']);
-		$model->addMessage(0,0,"Àäìèíèñòðàòîð ðàçáàíèë ".$user['nickname']);
+		$model->addMessage(0,0,"ÐÐ´Ð¼Ð¸Ð½Ð¸ÑÑ‚Ñ€Ð°Ñ‚Ð¾Ñ€ Ñ€Ð°Ð·Ð±Ð°Ð½Ð¸Ð» ".$user['nickname']);
 	      }
 	    }
 	    unset($message);
@@ -144,7 +144,7 @@ function ajaxchat()
 	  }
 	  else
 	  {
-	    $message = iconv("utf8","cp1251",$inCore->request('message', 'html', ''));
+	    $message = $inCore->request('message', 'html', '');
 	  }
 	}
       
@@ -217,9 +217,6 @@ function ajaxchat()
     {
       if($row['count'] != 0)
       {
-	$row['message'] = iconv("cp1251","utf8",$row['message']);
-	$row['author']['nickname'] = iconv("cp1251","utf8",$row['author']['nickname']);
-	$row['companion']['nickname'] = iconv("cp1251","utf8",$row['companion']['nickname']);
 	$row['senddate'] = date("H:i d-m-Y",$row['senddate']);
 	$messages_[] = $row;
       }
@@ -249,7 +246,7 @@ function ajaxchat()
     
     $output = array();
     $output['companion'] = $companion;
-    $output['companion']['nickname'] = iconv("cp1251","utf8",$companion['nickname']);
+    $output['companion']['nickname'] = $companion['nickname'];
     $output['messages'] = $messages;
     
     print json_encode($output);

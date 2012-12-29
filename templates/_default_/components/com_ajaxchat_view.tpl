@@ -5,8 +5,8 @@
 
     <div id="chatTopBar" class="rounded">
       <ul>
-	<li id="chatrum">Чат</li>
-	<li id="dialogs">Диалоги</li>
+	<li id="chatrum">Р§Р°С‚</li>
+	<li id="dialogs">Р”РёР°Р»РѕРіРё</li>
       </ul>
     </div>
     <div id="chatLineHolder"></div>
@@ -17,7 +17,7 @@
     	<div class="tip"></div>
         <div id="submitForm">
             <input id="chatText" name="chatText" class="rounded" maxlength="255" />
-            <input type="submit" class="blueButton" value="Отправить" onClick="sendMessage()"/>
+            <input type="submit" class="blueButton" value="РћС‚РїСЂР°РІРёС‚СЊ" onClick="sendMessage()"/>
         </div>
     </div>
 </div>
