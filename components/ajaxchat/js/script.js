@@ -9,7 +9,7 @@ $(document).ready(function(){
 	get_messages();
 	setInterval(loadNewMessages, 5000);
 	setInterval(onLineUsers, 15000);
-	
+
 	$f("player", "http://releases.flowplayer.org/swf/flowplayer-3.2.14.swf",{
 	  clip:{
 	    autoPlay: false,
@@ -21,22 +21,22 @@ $(document).ready(function(){
 	    {url: "/components/ajaxchat/sounds/Im-Sms.mp3"}
 	  ]
 	});
-	
+
 	var code = null;
-	
+
 	$("#chatText").keypress(function(e)
         {
             code = (e.keyCode ? e.keyCode : e.which);
             if (code == 13)
 	    {
-	      sendMessage();  
+	      sendMessage();
 	    };
         });
-	
+
 	$("#chatrum").addClass("active");
-	
+
 	$("#chatTopBar UL LI").click(function(){listTab($(this).attr("id"))});
-	
+
 	getDialogs();
 });
 
@@ -51,7 +51,7 @@ function get_userlist()
 	var users = jQuery.parseJSON(json);
 	if(!users)
 	{
-	  alert("Ïîëó÷åíû íåâåðíûå äàííûå");
+	  alert("Получены неверные данные");
 	}
 	else
 	{
@@ -68,7 +68,7 @@ function get_userlist()
 	  });
 	}
       }
-  });  
+  });
 }
 
 function get_messages()
@@ -82,7 +82,7 @@ function get_messages()
       var messages = jQuery.parseJSON(json);
       if(!messages)
       {
-	alert("Ïîëó÷åíû íåâåðíûå äàííûå");
+	alert("Получены неверные данные");
       }
       else
       {
@@ -100,7 +100,7 @@ function sendMessage()
 {
   var message = $("#chatText").val();
   var id = $(".active").attr("id");
-  
+
   if(message.length >= 2)
   {
     if(message == "/clean")
@@ -120,7 +120,7 @@ function sendMessage()
       $.ajax({
 	url:	"/ajaxchat/get_help",
 	type:	"post",
-	success: function(help)      
+	success: function(help)
 	{
 	  $("#chatLineHolder UL").append("<li>"+help+"</li>");
 	  $("#chatLineHolder").scrollTop("99999999");
@@ -169,7 +169,7 @@ function onLineUsers()
 	  {
 	    this.imageurl = "nopic.jpg";
 	  }
-	  
+
 	  if($("#chatuser_"+this.user_id).text().length == 0)
 	  {
 	    $("#chatUsers UL").append("<li class=\"chatuser\" id=\"chatuser_"+this.user_id+"\"><a href=\"/users/"+this.login+"\"><img src=\"http://yamolodoi.ru/images/users/avatars/small/"+this.imageurl+"\">"+this.nickname+"</a></li>");
@@ -177,7 +177,7 @@ function onLineUsers()
 	    {
 	      $f().play(0);
 	    }
-	    $("#chatLineHolder").scrollTop("99999999");	    
+	    $("#chatLineHolder").scrollTop("99999999");
 	  }
 	  else
 	  {
@@ -188,7 +188,7 @@ function onLineUsers()
       }
     }
   });
-  
+
 }
 
 function loadNewMessages()
@@ -220,7 +220,7 @@ function loadNewMessages()
 	      news = 1;
 	    }
 	  });
-	
+
 	  if(news == 1)
 	  {
 	    if(sound == 1)
@@ -237,7 +237,7 @@ function loadNewMessages()
 	    news = 0;
 	    hl = 0;
 	  }
-	  $("#chatLineHolder").scrollTop("99999999");      
+	  $("#chatLineHolder").scrollTop("99999999");
 	}
       }
     });
@@ -265,7 +265,7 @@ function listTab(tab)
   }
   else if(tab == "dialogs")
   {
-    $("#chatLineHolder").hide();    
+    $("#chatLineHolder").hide();
     $("#dialogLineHolder").show();
     $("#chatBottomBar").hide();
     $("#chatUsers").hide();
@@ -292,15 +292,15 @@ function formatMessage(mess)
   }
   if(mess.user_id == "0")
   {
-    var str = "<li id=\"mess_"+mess.id+"\"><tt>"+mess.time+"</tt> <i>"+mess.message+"</i></li>";  
+    var str = "<li id=\"mess_"+mess.id+"\"><tt>"+mess.time+"</tt> <i>"+mess.message+"</i></li>";
   }
   else if(mess.to_id == "0")
   {
-    var str = "<li id=\"mess_"+mess.id+"\"><tt>"+mess.time+"</tt> <b onClick=addLogin('"+mess.login+"')>"+mess.nickname+"</b>:"+mess.message+"</li>";  
+    var str = "<li id=\"mess_"+mess.id+"\"><tt>"+mess.time+"</tt> <b onClick=addLogin('"+mess.login+"')>"+mess.nickname+"</b>:"+mess.message+"</li>";
   }
   else
   {
-    var str = "<li id=\"mess_"+mess.id+"\"><tt>"+mess.time+"</tt> <b onClick=addLogin('"+mess.login+"')>"+mess.nickname+"</b> äëÿ <b onClick=addLogin('"+mess.to_login+"')>"+mess.to_nickname+"</b>:"+mess.message+"</li>";  
+    var str = "<li id=\"mess_"+mess.id+"\"><tt>"+mess.time+"</tt> <b onClick=addLogin('"+mess.login+"')>"+mess.nickname+"</b> для <b onClick=addLogin('"+mess.to_login+"')>"+mess.to_nickname+"</b>:"+mess.message+"</li>";
   }
   return str;
 }
@@ -311,7 +311,7 @@ function getDialogs()
   $.ajax({
     url:	"/ajaxchat/get_dialogs",
     type:	"post",
-    success: function(json)      
+    success: function(json)
     {
       var dialogs = jQuery.parseJSON(json);
       if(dialogs)
@@ -323,10 +323,10 @@ function getDialogs()
       }
       else
       {
-	$("#dialogLineHolder UL").append("Äèàëîãè îòñóòñòâóþò. Äëÿ íà÷àëà äèàëîãà íàïèøèòå êîìó ëèáî ëè÷íîå ñîîáùåíèå");
+	$("#dialogLineHolder UL").append("Диалоги отсутствуют. Для начала диалога напишите кому либо личное сообщение");
       }
     }
-  });  
+  });
 }
 
 function formatDialog(dialog)
@@ -335,7 +335,7 @@ function formatDialog(dialog)
   string = "<li id=\"dialog_"+dialog.companion.id+"\">";
   string += "<img class=\"companion_image\" src=\""+dialog.companion.imageurl+"\">";
   string += "<div class=\"title\">"+dialog.companion.nickname+"</div>";
-  string += "<div class=\"time\">"+dialog.senddate+"</div>";  
+  string += "<div class=\"time\">"+dialog.senddate+"</div>";
   string += "<div class=\"message\">";
   if(dialog.author.id == dialog.lastmessage_author_id)
   {
@@ -351,11 +351,11 @@ function loadDialog(id)
 {
   $("#chatTopBar UL LI").removeClass("active");
   $("#dialogLineHolder").text("");
-  $("#dialogLineHolder").show();	
+  $("#dialogLineHolder").show();
   $("#chatBottomBar").show();
   $("#chatLineHolder").hide();
   $("#chatUsers").hide();
-  
+
   $.ajax({
     url:	"/ajaxchat/get_converstation",
     type:	"post",
@@ -384,7 +384,7 @@ function loadUser(id)
 {
   if(active_user == id)
   {
-    $(".userinfo").remove();    
-    $("#chatuser_"+id).append("<div class=\"userinfo\"><div onClick=\"loadDialog("+id+")\">íàïèñàòü ëè÷íîå ñîîáùåíèå</div></div>")
+    $(".userinfo").remove();
+    $("#chatuser_"+id).append("<div class=\"userinfo\"><div onClick=\"loadDialog("+id+")\">написать личное сообщение</div></div>")
   }
 }
