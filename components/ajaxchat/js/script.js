@@ -64,7 +64,7 @@ function get_userlist()
 	    {
 	      active_user = this.user_id;
 	    }
-	    $("#chatUsers UL").append("<li class=\"chatuser\" id=\"chatuser_"+this.user_id+"\"><div onClick=\"loadUser("+this.user_id+")\"><img src=\"http://yamolodoi.ru/images/users/avatars/small/"+this.imageurl+"\">"+this.nickname+"</div></li>");
+	    $("#chatUsers UL").append("<li class=\"chatuser\" id=\"chatuser_"+this.user_id+"\"><div onClick=\"loadUser("+this.user_id+")\"><img src=\"/images/users/avatars/small/"+this.imageurl+"\">"+this.nickname+"</div></li>");
 	  });
 	}
       }
@@ -172,7 +172,7 @@ function onLineUsers()
 
 	  if($("#chatuser_"+this.user_id).text().length == 0)
 	  {
-	    $("#chatUsers UL").append("<li class=\"chatuser\" id=\"chatuser_"+this.user_id+"\"><a href=\"/users/"+this.login+"\"><img src=\"http://yamolodoi.ru/images/users/avatars/small/"+this.imageurl+"\">"+this.nickname+"</a></li>");
+	    $("#chatUsers UL").append("<li class=\"chatuser\" id=\"chatuser_"+this.user_id+"\"><a href=\"/users/"+this.login+"\"><img src=\"/images/users/avatars/small/"+this.imageurl+"\">"+this.nickname+"</a></li>");
 	    if(sound == 1)
 	    {
 	      $f().play(0);
