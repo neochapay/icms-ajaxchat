@@ -1,9 +1,9 @@
 <?php
 function info_module_mod_ajaxchat()
 {
-  $_module['title']        = 'Ñîîáùåíèå ajaxchat';
-  $_module['name']         = 'Ñîîáùåíèå ajaxchat';
-  $_module['description']  = 'Ñîîáùåíèå ajaxchat';
+  $_module['title']        = 'Ð¡Ð¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ ajaxchat';
+  $_module['name']         = 'Ð¡Ð¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ ajaxchat';
+  $_module['description']  = 'Ð¡Ð¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ ajaxchat';
   $_module['link']         = 'mod_ajaxchat';
   $_module['position']     = 'sidebar';
   $_module['author']       = 'NeoChapay';
