@@ -1,9 +1,9 @@
 <?php
     function info_component_ajaxchat(){
-        $_component['title']        = '×àò';
-        $_component['description']  = '÷àò';
+        $_component['title']        = 'Ð§Ð°Ñ‚';
+        $_component['description']  = 'Ñ‡Ð°Ñ‚';
         $_component['link']         = 'ajaxchat';
-        $_component['author']       = 'Ñåðãåé Èãîðåâè÷ (NeoChapay)';
+        $_component['author']       = 'Ð¡ÐµÑ€Ð³ÐµÐ¹ Ð˜Ð³Ð¾Ñ€ÐµÐ²Ð¸Ñ‡ (NeoChapay)';
         $_component['internal']     = '0';
         $_component['version']      = '0.1';
 
