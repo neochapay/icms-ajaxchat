@@ -51,7 +51,7 @@ function get_userlist()
 	var users = jQuery.parseJSON(json);
 	if(!users)
 	{
-	  alert("Получены неверные данные");
+	  alert("Получены неверные данные: отсутствует список пользователей");
 	}
 	else
 	{
@@ -82,7 +82,7 @@ function get_messages()
       var messages = jQuery.parseJSON(json);
       if(!messages)
       {
-	alert("Получены неверные данные");
+	alert("Получены неверные данные: отсутствует список сообщений");
       }
       else
       {

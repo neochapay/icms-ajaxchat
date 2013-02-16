@@ -66,12 +66,22 @@ function ajaxchat()
     {
       if(!$model->isBanned($inUser->id) or $inUser->is_admin)
       {
-	$messages = $model->getMessages();
-	print json_encode($messages);
+      	$messages = $model->getMessages();
+      	if($messages)
+      	{
+	  print json_encode($messages);
+	}
+	else
+	{
+	  $messages = array();
+	  print json_encode($messages);
+	}
       }
       else
       {
-	echo "ACCESS ERROR";
+	$messages['error'] = true;
+	$messages['error_message'] = "Ошибка доступа";
+	print json_encode($messages);
       }
     }
     exit;
@@ -188,12 +198,13 @@ function ajaxchat()
 	if(!$model->isBanned($inUser->id) or $inUser->is_admin)
 	{
 	  $messages = $model->getNewMessages($last_id,$inUser->id);
-	  print json_encode($messages);
 	}
 	else
 	{
-	  echo "ACCESS ERROR";
+	  $messages['error'] = 1;
+	  $messages['error_message'] = 1;
 	}
+	print json_encode($messages);
       }
     }
     exit;
