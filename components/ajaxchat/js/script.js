@@ -4,6 +4,7 @@ var news = 0;
 var upd = 0;
 var hl = 0;
 var active_user;
+var enable_dev =0;
 $(document).ready(function(){
 	get_userlist();
 	get_messages();
@@ -292,7 +293,7 @@ function formatMessage(mess)
   }
   if(mess.user_id == "0")
   {
-    var str = "<li id=\"mess_"+mess.id+"\"><tt>"+mess.time+"</tt> <i>"+mess.message+"</i></li>";
+    var str = "<li class=\"sysmes\" id=\"mess_"+mess.id+"\"><tt>"+mess.time+"</tt> <i>"+mess.message+"</i></li>";
   }
   else if(mess.to_id == "0")
   {
@@ -382,9 +383,24 @@ function loadDialog(id)
 
 function loadUser(id)
 {
-  if(active_user == id)
+  if(enable_dev == 1)
   {
-    $(".userinfo").remove();
-    $("#chatuser_"+id).append("<div class=\"userinfo\"><div onClick=\"loadDialog("+id+")\">написать личное сообщение</div></div>")
+    if(active_user == id)
+    {
+      $(".userinfo").remove();
+      $("#chatuser_"+id).append("<div class=\"userinfo\"><div onClick=\"loadDialog("+id+")\">написать личное сообщение</div></div>")
+    }
+  }
+}
+
+function sysMes()
+{
+  if($("#sysmes").attr("checked"))
+  {
+    $(".sysmes").hide();
+  }
+  else
+  {
+    $(".sysmes").show();
   }
 }

@@ -6,7 +6,6 @@
     <div id="chatTopBar" class="rounded">
       <ul>
 	<li id="chatrum">Чат</li>
-	<li id="dialogs">Диалоги</li>
       </ul>
     </div>
     <div id="chatLineHolder"></div>
@@ -15,9 +14,10 @@
     <div id="chatUsers" class="rounded"></div>
     <div id="chatBottomBar" class="rounded">
     	<div class="tip"></div>
-        <div id="submitForm">
-            <input id="chatText" name="chatText" class="rounded" maxlength="255" />
+        <div id="submitForm" style=" margin-right: 10px;">
+            <input id="chatText" name="chatText" class="rounded" style="width: 100%; margin-bottom: 10px;" />
             <input type="submit" class="blueButton" value="Отправить" onClick="sendMessage()"/>
+            Не показывать системные сообщения <input type="checkbox" id="sysmes" onChange="sysMes()">
         </div>
     </div>
 </div>
