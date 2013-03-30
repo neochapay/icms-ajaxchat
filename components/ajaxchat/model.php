@@ -250,6 +250,7 @@ class cms_model_ajaxchat
 	$to = $this->getUserByID($row['to_id']);
 	$row['to_nickname'] = $to['nickname'];
 	$row['to_login'] = $to['login'];
+	$row['message'] = str_replace("/to ".$to['login'],"", $row['message']);
       }
       $output[] = $row;
     }

@@ -95,17 +95,16 @@ function ajaxchat()
       $id = $inCore->request('id', 'str');
       if($id == "chatrum")
       {
-	$raw = explode(":",$message);
-	if($raw[0] != $message)
+	if(preg_match_all('((?:\\/[\\w\\.\\-]+)+)',$message, $matches))
 	{
-	  $message = str_replace($raw[0].":","",$message);
-	  $command_raw = explode(" ",$raw[0]);
-	  $command = $command_raw[0];
+	  $command = $matches[0][0];
+	  $command_raw = explode(" ",$message);
 	  $target = $command_raw[1];
 
 	  if($command == "/to")
 	  {
-	    $user = $model->getUser($target);
+	    str_replace(":","",$target);
+	    $user = $model->getUser(trim($target));
 	    if($user and $user['id'] != $inUser->id)
 	    {
 	      $to_id = $user['id'];
@@ -127,7 +126,7 @@ function ajaxchat()
 	      }
 	    }
 	    unset($message);
-	    print "user is banned.".mysql_error();
+	    print "user is banned.";
 	    exit;
 	  }
 	  elseif($command == "/unbann")
@@ -147,15 +146,20 @@ function ajaxchat()
 	  }
 	  elseif($command == "/me")
 	  {
-	    $model->addMessage(0,0,$inUser->nickname." ".$message);
+	    $string = trim(str_replace($command,"",$message));
+	    $model->addMessage(0,0,$inUser->nickname." ".$string);
 	    unset($message);
 	    print "pass";
 	    exit;
 	  }
 	  else
 	  {
-	    $message = $inCore->request('message', 'html', '');
+	    unset($message);
 	  }
+	}
+	else
+	{
+	  $message = $inCore->request('message', 'html', '');
 	}
       
       
