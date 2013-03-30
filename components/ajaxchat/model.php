@@ -15,6 +15,30 @@ class cms_model_ajaxchat
     return $cfg;
   }
 
+  public function getColor()
+  {
+        //Определяем цвета сообщений чата
+    $colors = array();
+    $colors[] = '#996600';
+    $colors[] = '#cc9900';
+    $colors[] = '#ff3300';
+    $colors[] = '#990000';
+    $colors[] = '#003399';
+    $colors[] = '#0066cc';
+    $colors[] = '#0083d7';
+    $colors[] = '#3e9ade';
+    $colors[] = '#6666cc';
+    $colors[] = '#666699';
+    $colors[] = '#006600';
+    $colors[] = '#009900';
+    $colors[] = '#66cc33';  
+    
+    $color_count = count($colors);
+    $color_rnd = rand(0,$color_count-1);
+    $color = $colors[$color_rnd];
+    return $color;
+  }
+  
   public function CheckOnline($user_id)
   {
     $sql = "SELECT * FROM cms_ajaxchat_online WHERE user_id = $user_id";
@@ -53,7 +77,7 @@ class cms_model_ajaxchat
     }
     else
     {
-      $sql = "INSERT INTO `cms_ajaxchat_online` (`user_id`, `last_action`) VALUES ('$user_id', NOW())";
+      $sql = "INSERT INTO `cms_ajaxchat_online` (`user_id`, `last_action`, `color`) VALUES ('$user_id', NOW(), '".$this->getColor()."')";
     }
     
     $result = $this->inDB->query($sql);
@@ -139,10 +163,12 @@ class cms_model_ajaxchat
     cms_ajaxchat_messages.user_id,
     cms_users.login,
     cms_users.nickname,
-    cms_user_profiles.imageurl
+    cms_user_profiles.imageurl,
+    cms_ajaxchat_online.color as color
     FROM cms_ajaxchat_messages
     LEFT JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
-    LEFT JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id    
+    LEFT JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id  
+    LEFT JOIN cms_ajaxchat_online ON cms_ajaxchat_messages.user_id = cms_ajaxchat_online.user_id
     ORDER BY cms_ajaxchat_messages.id ASC LIMIT $offset,25";
     $result = $this->inDB->query($sql);
 
@@ -187,10 +213,12 @@ class cms_model_ajaxchat
     cms_ajaxchat_messages.user_id,
     cms_users.login,
     cms_users.nickname,
-    cms_user_profiles.imageurl
+    cms_user_profiles.imageurl,
+    cms_ajaxchat_online.color as color
     FROM cms_ajaxchat_messages
     LEFT JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
     LEFT JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id    
+    LEFT JOIN cms_ajaxchat_online ON cms_ajaxchat_messages.user_id = cms_ajaxchat_online.user_id
     WHERE cms_ajaxchat_messages.id > $last_id
     ORDER BY cms_ajaxchat_messages.id ASC";
     $result = $this->inDB->query($sql);

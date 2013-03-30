@@ -297,11 +297,11 @@ function formatMessage(mess)
   }
   else if(mess.to_id == "0")
   {
-    var str = "<li id=\"mess_"+mess.id+"\"><tt>"+mess.time+"</tt> <b onClick=addLogin('"+mess.login+"')>"+mess.nickname+"</b>:"+mess.message+"</li>";
+    var str = "<li id=\"mess_"+mess.id+"\" style=\"color:"+mess.color+"\"><tt>"+mess.time+"</tt> <b onClick=addLogin('"+mess.login+"')>"+mess.nickname+"</b>:"+mess.message+"</li>";
   }
   else
   {
-    var str = "<li id=\"mess_"+mess.id+"\"><tt>"+mess.time+"</tt> <b onClick=addLogin('"+mess.login+"')>"+mess.nickname+"</b> для <b onClick=addLogin('"+mess.to_login+"')>"+mess.to_nickname+"</b>:"+mess.message+"</li>";
+    var str = "<li id=\"mess_"+mess.id+"\" style=\"color:"+mess.color+"\"><tt>"+mess.time+"</tt> <b onClick=addLogin('"+mess.login+"')>"+mess.nickname+"</b> для <b onClick=addLogin('"+mess.to_login+"')>"+mess.to_nickname+"</b>:"+mess.message+"</li>";
   }
   return str;
 }
