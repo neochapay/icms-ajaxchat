@@ -145,16 +145,26 @@ class cms_model_ajaxchat
     return TRUE;     
   }
   
-  public function getMessages()
-  {
-    $offset_sql = "SELECT * FROM cms_ajaxchat_messages";
-    $offset_result = $this->inDB->query($offset_sql);
-    $offset = $this->inDB->num_rows($offset_result)-25;
-    
+  public function getMessages($skipsystem, $limit)
+  {  
     if($offset < 0)
     {
       $offset = 0;
     }
+    
+    if(!$limit or $limit > 25)
+    {
+      $limit = 25;
+    }
+    
+    if($skipsystem)
+    {
+      $apx = " WHERE cms_ajaxchat_messages.user_id <> 0 ";
+    }
+    
+    $offset_sql = "SELECT * FROM cms_ajaxchat_messages $apx";
+    $offset_result = $this->inDB->query($offset_sql);
+    $offset = $this->inDB->num_rows($offset_result)-$limit;
     
     $sql = "SELECT cms_ajaxchat_messages.id,
     cms_ajaxchat_messages.message,
@@ -169,7 +179,8 @@ class cms_model_ajaxchat
     LEFT JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
     LEFT JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id  
     LEFT JOIN cms_ajaxchat_online ON cms_ajaxchat_messages.user_id = cms_ajaxchat_online.user_id
-    ORDER BY cms_ajaxchat_messages.id ASC LIMIT $offset,25";
+    $apx
+    ORDER BY cms_ajaxchat_messages.id ASC LIMIT $offset,$limit";
     $result = $this->inDB->query($sql);
 
     if ($this->inDB->error())
@@ -198,11 +209,16 @@ class cms_model_ajaxchat
     return $output;     
   }
   
-  public function getNewMessages($last_id,$user_id)
+  public function getNewMessages($last_id,$user_id,$skipsystem)
   {
     if($this->inDB->get_last_id('cms_ajaxchat_messages') >= $last_id)
     {
       return false;
+    }
+  
+    if($skipsystem)
+    {
+      $apx = "AND cms_ajaxchat_messages.user_id <> 0";
     }
   
     $this->UpdateOnlineList($user_id);
@@ -220,6 +236,7 @@ class cms_model_ajaxchat
     LEFT JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id    
     LEFT JOIN cms_ajaxchat_online ON cms_ajaxchat_messages.user_id = cms_ajaxchat_online.user_id
     WHERE cms_ajaxchat_messages.id > $last_id
+    $apx
     ORDER BY cms_ajaxchat_messages.id ASC";
     $result = $this->inDB->query($sql);
 

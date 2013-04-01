@@ -62,11 +62,13 @@ function ajaxchat()
   
   if($do == "get_messages")
   {
+    $skipsystem = $inCore->request('skipsystem', 'int');
+    $count = $inCore->request('count', 'int');
     if($inUser->id)
     {
       if(!$model->isBanned($inUser->id) or $inUser->is_admin)
       {
-      	$messages = $model->getMessages();
+      	$messages = $model->getMessages($skipsystem,$count);
       	if($messages)
       	{
 	  print json_encode($messages);
@@ -152,10 +154,6 @@ function ajaxchat()
 	    print "pass";
 	    exit;
 	  }
-	  else
-	  {
-	    unset($message);
-	  }
 	}
 	else
 	{
@@ -194,25 +192,24 @@ function ajaxchat()
   
   if($do == "load_new")
   {
-    if($inUser->id)
+    $last_id = $inCore->request('last_id', 'int');
+    $skipsystem = $inCore->request('skipsystem', 'int');
+    if($last_id)
     {
-      $last_id = $inCore->request('last_id', 'int');
-      if($last_id)
+      if(!$model->isBanned($inUser->id) or $inUser->is_admin)
       {
-	if(!$model->isBanned($inUser->id) or $inUser->is_admin)
-	{
-	  $messages = $model->getNewMessages($last_id,$inUser->id);
-	}
-	else
-	{
-	  $messages['error'] = 1;
-	  $messages['error_message'] = 1;
-	}
-	print json_encode($messages);
+	$messages = $model->getNewMessages($last_id,$inUser->id,$skipsystem);
       }
+      else
+      {
+	$messages['error'] = 1;
+	$messages['error_message'] = "Вы забанены";
+      }
+      print json_encode($messages);
+      exit;
     }
-    exit;
   }
+  
   if($do == "get_dialogs")
   {
     $messages = $model->getMessageList($inUser->id);
