@@ -154,6 +154,11 @@ function ajaxchat()
 	    print "pass";
 	    exit;
 	  }
+	  elseif($command == "/color")
+	  {
+	    $model->changeColor($inUser->id);
+	    unset($message);
+	  }
 	}
 	else
 	{

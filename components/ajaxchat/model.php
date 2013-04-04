@@ -39,6 +39,13 @@ class cms_model_ajaxchat
     return $color;
   }
   
+  public function changeColor($user_id)
+  {
+    $color = $this->getColor();
+    $sql = "UPDATE cms_ajaxchat_online SET `color` = '$color' WHERE `user_id` = '$user_id'";
+    $result = $this->inDB->query($sql);
+  }
+  
   public function CheckOnline($user_id)
   {
     $sql = "SELECT * FROM cms_ajaxchat_online WHERE user_id = $user_id";
