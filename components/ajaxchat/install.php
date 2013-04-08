@@ -15,22 +15,24 @@
       $inDB = cmsDatabase::getInstance();
       $sql = "CREATE TABLE IF NOT EXISTS `cms_ajaxchat_banlist` (
 	      `user_id` int(11) NOT NULL
-	      ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+	      ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+      $inDB->query($sql);
 
-	      CREATE TABLE IF NOT EXISTS `cms_ajaxchat_messages` (
+      $sql = "CREATE TABLE IF NOT EXISTS `cms_ajaxchat_messages` (
 	      `id` int(11) NOT NULL AUTO_INCREMENT,
 	      `user_id` int(11) NOT NULL,
 	      `to_id` int(11) NOT NULL,
 	      `message` mediumtext NOT NULL,
 	      `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	      PRIMARY KEY (`id`)
-	      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-
-	      CREATE TABLE IF NOT EXISTS `cms_ajaxchat_online` (
+	      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8";
+      $inDB->query($sql);
+      
+      $sql = "CREATE TABLE IF NOT EXISTS `cms_ajaxchat_online` (
 	      `user_id` int(11) NOT NULL,
 	      `last_action` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	      `color` text NOT NULL
-	      ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+	      ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
       $inDB->query($sql);
       return true;
     }
