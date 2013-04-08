@@ -153,12 +153,7 @@ class cms_model_ajaxchat
   }
   
   public function getMessages($skipsystem, $limit)
-  {  
-    if($offset < 0)
-    {
-      $offset = 0;
-    }
-    
+  {      
     if(!$limit or $limit > 25)
     {
       $limit = 25;
@@ -173,6 +168,11 @@ class cms_model_ajaxchat
     $offset_result = $this->inDB->query($offset_sql);
     $offset = $this->inDB->num_rows($offset_result)-$limit;
     
+    if($offset < 0)
+    {
+      $offset = 0;
+    }
+
     $sql = "SELECT cms_ajaxchat_messages.id,
     cms_ajaxchat_messages.message,
     cms_ajaxchat_messages.time,
@@ -189,7 +189,7 @@ class cms_model_ajaxchat
     $apx
     ORDER BY cms_ajaxchat_messages.id ASC LIMIT $offset,$limit";
     $result = $this->inDB->query($sql);
-
+    
     if ($this->inDB->error())
     {
       return false;
