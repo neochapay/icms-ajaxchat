@@ -211,8 +211,8 @@ function ajaxchat()
 	$messages['error_message'] = "Вы забанены";
       }
       print json_encode($messages);
-      exit;
     }
+    exit;
   }
   
   if($do == "get_dialogs")
