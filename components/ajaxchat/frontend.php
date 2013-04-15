@@ -37,7 +37,7 @@ function ajaxchat()
     }
     else
     {
-      cmsCore::addSessionMessage('Для входа в чат необходимо зайти на сайт', 'error');
+      cmsCore::addSessionMessage('Для того, чтобы воспользоваться чатом, Вам необходимо войти на сайт под своим аккаунтом', 'error');
       $inCore->redirect("/login");
     }
   }
