@@ -2,6 +2,7 @@
 <style>
   #minichat UL{
     list-style: none; 
+    padding: 0px;
   }
   
   .widget-container #minichat li{
@@ -21,6 +22,8 @@
   
   #minichat UL LI{
     max-height: 20px;
+    overflow: hidden;
+    margin-left: 0px;
   }
 </style>
 <script>

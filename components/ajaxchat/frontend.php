@@ -64,25 +64,22 @@ function ajaxchat()
   {
     $skipsystem = $inCore->request('skipsystem', 'int');
     $count = $inCore->request('count', 'int');
-    if($inUser->id)
+    if($model->isBanned($inUser->id))
     {
-      if(!$model->isBanned($inUser->id) or $inUser->is_admin)
+      $messages['error'] = true;
+      $messages['error_message'] = "Ошибка доступа";
+      print json_encode($messages);
+    }
+    else
+    {
+      $messages = $model->getMessages($skipsystem,$count);
+      if($messages)
       {
-      	$messages = $model->getMessages($skipsystem,$count);
-      	if($messages)
-      	{
-	  print json_encode($messages);
-	}
-	else
-	{
-	  $messages = array();
-	  print json_encode($messages);
-	}
+	print json_encode($messages);
       }
       else
       {
-	$messages['error'] = true;
-	$messages['error_message'] = "Ошибка доступа";
+	$messages = array();
 	print json_encode($messages);
       }
     }
