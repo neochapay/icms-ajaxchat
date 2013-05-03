@@ -42,13 +42,13 @@ class cms_model_ajaxchat
   public function changeColor($user_id)
   {
     $color = $this->getColor();
-    $sql = "UPDATE cms_ajaxchat_online SET `color` = '$color' WHERE `user_id` = '$user_id'";
+    $sql = "UPDATE cms_ajaxchat_users SET `color` = '$color' WHERE `user_id` = '$user_id'";
     $result = $this->inDB->query($sql);
   }
   
-  public function CheckOnline($user_id)
+  public function CheckUser($user_id)
   {
-    $sql = "SELECT * FROM cms_ajaxchat_online WHERE user_id = $user_id";
+    $sql = "SELECT * FROM cms_ajaxchat_users WHERE user_id = $user_id";
     $result = $this->inDB->query($sql);
     
     if($this->inDB->error())
@@ -65,7 +65,7 @@ class cms_model_ajaxchat
   
   public function ClearOnline()
   {
-    $sql = "DELETE FROM cms_ajaxchat_online WHERE last_action < NOW() - INTERVAL 1 MINUTE";
+    $sql = "UPDATE Fcms_ajaxchat_users SET `online` = '0' WHERE last_action < NOW() - INTERVAL 1 MINUTE";
     $result = $this->inDB->query($sql);
       
     if($this->inDB->error())
@@ -78,13 +78,13 @@ class cms_model_ajaxchat
   public function UpdateOnlineList($user_id)
   {
     $this->ClearOnline();
-    if($this->CheckOnline($user_id))
+    if($this->CheckUser($user_id))
     {
-      $sql = "UPDATE cms_ajaxchat_online SET last_action = NOW() WHERE user_id = $user_id";
+      $sql = "UPDATE cms_ajaxchat_users SET last_action = NOW() , `online` = '1' WHERE user_id = $user_id";
     }
     else
     {
-      $sql = "INSERT INTO `cms_ajaxchat_online` (`user_id`, `last_action`, `color`) VALUES ('$user_id', NOW(), '".$this->getColor()."')";
+      $sql = "INSERT INTO `cms_ajaxchat_users` (`user_id`, `last_action`, `color`, `online`) VALUES ('$user_id', NOW(), '".$this->getColor()."', '1')";
     }
     
     $result = $this->inDB->query($sql);
@@ -103,14 +103,15 @@ class cms_model_ajaxchat
   public function getOnline()
   {
     $this->ClearOnline();
-    $sql = "SELECT cms_ajaxchat_online.last_action,
-    cms_ajaxchat_online.user_id,
+    $sql = "SELECT cms_ajaxchat_users.last_action,
+    cms_ajaxchat_users.user_id,
     cms_users.login,
     cms_users.nickname,
     cms_user_profiles.imageurl
-    FROM cms_ajaxchat_online
-    INNER JOIN cms_users ON cms_ajaxchat_online.user_id = cms_users.id
-    INNER JOIN cms_user_profiles ON cms_ajaxchat_online.user_id = cms_user_profiles.user_id
+    FROM cms_ajaxchat_users
+    INNER JOIN cms_users ON cms_ajaxchat_users.user_id = cms_users.id
+    INNER JOIN cms_user_profiles ON cms_ajaxchat_users.user_id = cms_user_profiles.user_id
+    WHERE cms_ajaxchat_users.online = 1
     ";
     $result = $this->inDB->query($sql);
 
@@ -181,11 +182,11 @@ class cms_model_ajaxchat
     cms_users.login,
     cms_users.nickname,
     cms_user_profiles.imageurl,
-    cms_ajaxchat_online.color as color
+    cms_ajaxchat_users.color as color
     FROM cms_ajaxchat_messages
     LEFT JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
     LEFT JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id  
-    LEFT JOIN cms_ajaxchat_online ON cms_ajaxchat_messages.user_id = cms_ajaxchat_online.user_id
+    LEFT JOIN cms_ajaxchat_users ON cms_ajaxchat_messages.user_id = cms_ajaxchat_users.user_id
     $apx
     ORDER BY cms_ajaxchat_messages.id ASC LIMIT $offset,$limit";
     $result = $this->inDB->query($sql);
@@ -238,11 +239,11 @@ class cms_model_ajaxchat
     cms_users.login,
     cms_users.nickname,
     cms_user_profiles.imageurl,
-    cms_ajaxchat_online.color as color
+    cms_ajaxchat_users.color as color
     FROM cms_ajaxchat_messages
     LEFT JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
     LEFT JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id    
-    LEFT JOIN cms_ajaxchat_online ON cms_ajaxchat_messages.user_id = cms_ajaxchat_online.user_id
+    LEFT JOIN cms_ajaxchat_users ON cms_ajaxchat_messages.user_id = cms_ajaxchat_users.user_id
     WHERE cms_ajaxchat_messages.id > $last_id
     $apx
     ORDER BY cms_ajaxchat_messages.id ASC";

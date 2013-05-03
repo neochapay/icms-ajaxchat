@@ -50,6 +50,7 @@ function ajaxchat()
       {
 	$model->UpdateOnlineList($inUser->id);
 	$online = $model->getOnline();
+	print mysql_error();
 	print json_encode($online);
       }
       else

@@ -5,8 +5,7 @@
         $_component['link']         = 'ajaxchat';
         $_component['author']       = 'Сергей Игоревич (NeoChapay)';
         $_component['internal']     = '0';
-        $_component['version']      = '0.2';
-
+        $_component['version']      = '0.3';
         return $_component;
     }
 
@@ -28,11 +27,12 @@
 	      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8";
       $inDB->query($sql);
       
-      $sql = "CREATE TABLE IF NOT EXISTS `cms_ajaxchat_online` (
+      $sql = "CREATE TABLE IF NOT EXISTS `cms_ajaxchat_users` (
 	      `user_id` int(11) NOT NULL,
 	      `last_action` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	      `color` text NOT NULL
-	      ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+	      `color` text NOT NULL,
+	      `online` tinyint(4) NOT NULL
+	      ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
       $inDB->query($sql);
       return true;
     }
@@ -40,8 +40,8 @@
     function upgrade_component_ajaxchat()
     {
       $inDB = cmsDatabase::getInstance();
-      $sql = "ALTER TABLE  `cms_ajaxchat_online` ADD  `color` TEXT NOT NULL";
-      $inDB->query($sql);
+      $inDB->query("RENAME TABLE  `cms_ajaxchat_online` TO  `cms_ajaxchat_users`");
+      $inDB->query("ALTER TABLE  `cms_ajaxchat_users` ADD  `online` TINYINT NOT NULL");
       return true;
     }
 
