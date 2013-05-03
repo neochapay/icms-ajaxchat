@@ -7,11 +7,14 @@ class cms_model_ajaxchat
   {
     $this->inDB = cmsDatabase::getInstance();
     $this->inUser = cmsUser::getInstance();
+    $this->config = cmsCore::getInstance()->loadComponentConfig('ajaxchat');
   }
   
   public function getDefaultConfig() 
   {
     $cfg = array();
+    $cfg['history_clear'] = 0;
+    $cfg['help'] = "Доступные команды:\n/sound on - Включение звуков\n/sound off - Выключение звуков\n/me - Сообщение в третьем лице\n/color - Смена цвета";
     return $cfg;
   }
 
