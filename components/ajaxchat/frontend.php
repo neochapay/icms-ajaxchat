@@ -270,7 +270,7 @@ function ajaxchat()
   
   if($do == "get_help")
   {
-    print $cfg['help'];
+    print str_replace("\n","<br />",$cfg['help']);
     exit;
   }
 }
