@@ -49,6 +49,23 @@ class cms_model_ajaxchat
     $result = $this->inDB->query($sql);
   }
   
+  public function CheckOnline($user_id)
+  {
+    $sql = "SELECT * FROM cms_ajaxchat_users WHERE user_id = $user_id AND online = 1";
+    $result = $this->inDB->query($sql);
+    
+    if($this->inDB->error())
+    {
+      return FALSE;
+    }
+    
+    if(!$this->inDB->num_rows($result))
+    {
+      return FALSE;
+    }
+    return TRUE;    
+  }
+  
   public function CheckUser($user_id)
   {
     $sql = "SELECT * FROM cms_ajaxchat_users WHERE user_id = $user_id";
@@ -476,9 +493,46 @@ class cms_model_ajaxchat
     
     while ($row = $this->inDB->fetch_assoc($result))
     {
+      $row['user_id'] = $row['from_id'];
+      $row['color'] = "#000000";
+      $row['time'] = substr($row['senddate'],10);
+      $row['to_id'] = 0;
+      
+      $send_user = $this->getUserByID($row["from_id"]);
+      $row['nickname'] = $send_user['nickname'];
+      
       $output[] = $row;
     }
     return $output;
-  }  
+  }
+  
+  public function getDialogs($user_id)
+  {
+  //Загружаем активные диалоги - тоесть сообщения личные которые пользователь не прочёл
+    $sql = "SELECT cms_user_msg.* ,
+    cms_users.nickname AS from_nickname ,
+    cms_users.login AS from_login
+    FROM cms_user_msg 
+    INNER JOIN cms_users ON cms_users.id = cms_user_msg.from_id
+    WHERE `cms_user_msg`.`to_id` = '$user_id'
+    AND `cms_user_msg`.`is_new` = '1'";
+    $result = $this->inDB->query($sql);
+    
+    if ($this->inDB->error()) 
+    {
+      return FALSE; 
+    }
+    
+    if (!$this->inDB->num_rows($result)) 
+    { 
+      return FALSE; 
+    }
+    
+    while ($row = $this->inDB->fetch_assoc($result))
+    {
+      $output[] = $row;
+    }
+    return $output;    
+  }
 }
 ?>

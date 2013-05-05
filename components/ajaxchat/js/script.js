@@ -37,8 +37,6 @@ $(document).ready(function(){
 	$("#chatrum").addClass("active");
 
 	$("#chatTopBar UL LI").click(function(){listTab($(this).attr("id"))});
-
-	getDialogs();
 });
 
 function get_userlist()
@@ -80,21 +78,32 @@ function get_messages()
     success:	function(json)
     {
       $("#chatLineHolder").html("<ul></ul>");
-      var messages = jQuery.parseJSON(json);
-      if(!messages)
+      var str = jQuery.parseJSON(json);
+      if(!str)
       {
 	alert("Получены неверные данные: отсутствует список сообщений");
       }
+      else if(str.error)
+      {
+	alert(str.error_message);
+      }
       else
       {
-	$.each(messages,function(){
+	$.each(str.messages,function(){
 	  $("#chatLineHolder UL").append(formatMessage(this));
 	    last_id = this.id;
 	});
+	
+	$.each(str.dialogs,function(){
+	  from_id = this.from_id;
+	  $("#chatTopBar UL").append("<li id=\"open_"+this.from_id+"\" class=\"dialog\">"+this.from_nickname+"</div>");
+	  $("#open_"+from_id).click(function(){listTab("open_"+from_id)});
+	})
       }
+      var height = $("#chatLineHolder UL").height();
+      $("#chatLineHolder").animate({"scrollTop":height},"fast");
     }
   });
-  $("#chatLineHolder").scrollTop("99999999");
 }
 
 function sendMessage()
@@ -263,25 +272,19 @@ function listTab(tab)
     $("#dialogLineHolder").hide();
     $("#chatUsers").show();
     $("#chatLineHolder").scrollTop("99999999");
-  }
-  else if(tab == "dialogs")
-  {
-    $("#chatLineHolder").hide();
-    $("#dialogLineHolder").show();
-    $("#chatBottomBar").hide();
-    $("#chatUsers").hide();
-    if($("#dialogLineHolder").html().length == 0)
-    {
-      getDialogs();
-    }
+    id = "";
   }
   else
   {
     $("#chatLineHolder").hide();
-    $("#dialogLineHolder").text("");
     $("#dialogLineHolder").show();
     $("#chatBottomBar").show();
     $("#chatUsers").hide();
+    if($("#"+tab).hasClass("dialog"))
+    {
+      id = tab.replace("open_","");
+      loadDialog(tab);
+    }
   }
 }
 
@@ -297,7 +300,12 @@ function formatMessage(mess)
   }
   else if(mess.to_id == "0")
   {
-    var str = "<li id=\"mess_"+mess.id+"\" style=\"color:"+mess.color+"\"><tt>"+mess.time+"</tt> <b onClick=addLogin('"+mess.login+"')>"+mess.nickname+"</b>:"+mess.message+"</li>";
+    var str = "<li id=\"mess_"+mess.id+"\" style=\"color:"+mess.color+"\"><tt>"+mess.time+"</tt> <b"; 
+    if(mess.login)
+    {
+      str += "onClick=addLogin('"+mess.login+"')";
+    }
+    str += ">"+mess.nickname+"</b>:"+mess.message+"</li>";
   }
   else
   {
@@ -306,57 +314,8 @@ function formatMessage(mess)
   return str;
 }
 
-function getDialogs()
-{
-  $("#dialogLineHolder").html("<ul></ul>");
-  $.ajax({
-    url:	"/ajaxchat/get_dialogs",
-    type:	"post",
-    success: function(json)
-    {
-      var dialogs = jQuery.parseJSON(json);
-      if(dialogs)
-      {
-	$.each(dialogs,function(){
-	  $("#dialogLineHolder UL").append(formatDialog(this));
-	});
-	$("#dialogLineHolder UL LI").click(function(){loadDialog($(this).attr("id"))});
-      }
-      else
-      {
-	$("#dialogLineHolder UL").append("Диалоги отсутствуют. Для начала диалога напишите кому либо личное сообщение");
-      }
-    }
-  });
-}
-
-function formatDialog(dialog)
-{
-  var string;
-  string = "<li id=\"dialog_"+dialog.companion.id+"\">";
-  string += "<img class=\"companion_image\" src=\""+dialog.companion.imageurl+"\">";
-  string += "<div class=\"title\">"+dialog.companion.nickname+"</div>";
-  string += "<div class=\"time\">"+dialog.senddate+"</div>";
-  string += "<div class=\"message\">";
-  if(dialog.author.id == dialog.lastmessage_author_id)
-  {
-    string += "<img class=\"author_image\" src=\""+dialog.author.imageurl+"\">";
-  }
-  string += dialog.message;
-  string += "</div>";
-  string += "</li>";
-  return string;
-}
-
 function loadDialog(id)
 {
-  $("#chatTopBar UL LI").removeClass("active");
-  $("#dialogLineHolder").text("");
-  $("#dialogLineHolder").show();
-  $("#chatBottomBar").show();
-  $("#chatLineHolder").hide();
-  $("#chatUsers").hide();
-
   $.ajax({
     url:	"/ajaxchat/get_converstation",
     type:	"post",
@@ -366,16 +325,12 @@ function loadDialog(id)
       var dialog = jQuery.parseJSON(json);
       if(dialog)
       {
-	if($("#open_"+id).text().length == 0)
-	{
-	  $("#chatTopBar UL").append("<li id=\"open_"+id+"\">"+dialog.companion.nickname+"</div>");
-	}
-	$("#open_"+id).addClass("active");
-	$("#open_"+id).click(function(){listTab($(this).attr("id"))});
 	$("#dialogLineHolder").html("<ul></ul>");
 	$.each(dialog.messages, function(){
-	  //$("#dialogLineHolder UL").append(formatDialog(this));
+	    $("#dialogLineHolder UL").append(formatMessage(this));
 	});
+	var height = $("#dialogLineHolder UL").height();
+	$("#dialogLineHolder").animate({"scrollTop":height},"fast");
       }
     }
   });

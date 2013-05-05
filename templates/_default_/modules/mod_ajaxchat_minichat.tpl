@@ -36,10 +36,10 @@ $.ajax({
     success:	function(json)
     {
       $("#minichat").html("<ul></ul>");
-      var messages = jQuery.parseJSON(json);
-      if(messages)
+      var str = jQuery.parseJSON(json);
+      if(str.messages)
       {
-	$.each(messages,function(){
+	$.each(str.messages,function(){
 	  $("#minichat UL").append(formatMessage(this));
 	    last_id = this.id;
 	});

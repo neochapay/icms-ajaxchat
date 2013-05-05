@@ -91,7 +91,7 @@
 /*Диалоги*/
 #dialogLineHolder{
 	height:360px;
-	width:980px;
+	width:660px;
 	margin-bottom:20px;
 	overflow-y: auto;
 	overflow-x: hidden;
@@ -104,7 +104,6 @@
 }
 
 #dialogLineHolder UL LI{
-  height: 70px;
   padding: 2px;
   margin: 2px;
   overflow: hidden;

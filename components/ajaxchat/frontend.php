@@ -20,7 +20,7 @@ function ajaxchat()
       if(!$model->isBanned($inUser->id) or $inUser->is_admin)
       {
 	$inPage->setTitle("Чат");
-	if(!$model->CheckOnline($inUser->id))
+	if(!$model->CheckUser($inUser->id))
 	{
 	  $model->addMessage(0,0,"К чату присоединяется ".$inUser->nickname);
 	}
@@ -72,16 +72,10 @@ function ajaxchat()
     }
     else
     {
-      $messages = $model->getMessages($skipsystem,$count);
-      if($messages)
-      {
-	print json_encode($messages);
-      }
-      else
-      {
-	$messages = array();
-	print json_encode($messages);
-      }
+      $output = array();
+      $output['messages'] = $model->getMessages($skipsystem,$count);
+      $output['dialogs'] = $model->getDialogs($inUser->id);
+      print json_encode($output);
     }
     exit;
   }
@@ -243,7 +237,7 @@ function ajaxchat()
   if($do == "get_converstation")
   {
     $companion = $inCore->request('id', 'str');
-    $companion_id = str_replace("dialog_","",$companion);
+    $companion_id = str_replace("open_","",$companion);
     if(!$inUser->id)
     {
       exit;
@@ -254,17 +248,11 @@ function ajaxchat()
       $companion_id = "-1";
     }
     
-    $companion = $model->getDialogUser($companion_id);
-    $author = $model->getDialogUser($inUser->id);
-    $messages = $model->getDialog($inUser->id,$companion_id);
-    
+    $companion = $model->getUserByID($companion_id);
+
     $output = array();
-    $output['companion'] = $companion;
-    $output['companion']['nickname'] = $companion['nickname'];
-    $output['messages'] = $messages;
-    
+    $output['messages'] = $model->getDialog($inUser->id,$companion_id);
     print json_encode($output);
-    
     exit;
   }
   
