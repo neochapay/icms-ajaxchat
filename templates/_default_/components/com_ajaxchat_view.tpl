@@ -21,6 +21,7 @@
         </div>
     </div>
 </div>
+<div align="center"><a href="/ajaxchat/history.html"><h6>история чата</h6></a></div>
 <div id="player" style="display:block;width:0px;height:0px;"></div>
 <script src="/components/ajaxchat/js/fp/fp.min.js"></script>
 <script src="/components/ajaxchat/js/script.js"></script>

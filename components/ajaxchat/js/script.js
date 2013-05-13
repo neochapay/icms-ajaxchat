@@ -257,7 +257,7 @@ function loadNewMessages()
 
 function addLogin(login)
 {
-  $("#chatText").val("/to "+login+":");
+  $("#chatText").val("/to "+login+" ");
   $("#chatText").focus();
 }
 
@@ -303,7 +303,7 @@ function formatMessage(mess)
     var str = "<li id=\"mess_"+mess.id+"\" style=\"color:"+mess.color+"\"><tt>"+mess.time+"</tt> <b"; 
     if(mess.login)
     {
-      str += "onClick=addLogin('"+mess.login+"')";
+      str += " onClick=addLogin('"+mess.login+"')";
     }
     str += ">"+mess.nickname+"</b>:"+mess.message+"</li>";
   }

@@ -83,9 +83,41 @@ class cms_model_ajaxchat
     return TRUE;
   }
   
+  public function totalMessages($skipsystem)
+  {
+    if(!$skipsystem)
+    {
+      $sql = "SELECT * FROM cms_ajaxchat_messages";
+    }
+    else
+    {
+      $sql = "SELECT * FROM cms_ajaxchat_messages WHERE user_id <> 0";
+    }
+    $result = $this->inDB->query($sql);
+    
+    if($this->inDB->error())
+    {
+      return FALSE;
+    }
+    
+    return $this->inDB->num_rows($result);    
+  }
+  
+  public function deleteMessage($id)
+  {
+    $sql ="DELETE FROM cms_ajaxchat_messages WHERE id = $id LIMIT 1";
+    $result = $this->inDB->query($sql);
+    
+    if($this->inDB->error())
+    {
+      return FALSE;
+    }
+    return TRUE;
+  }
+  
   public function ClearOnline()
   {
-    $sql = "UPDATE Fcms_ajaxchat_users SET `online` = '0' WHERE last_action < NOW() - INTERVAL 1 MINUTE";
+    $sql = "UPDATE cms_ajaxchat_users SET `online` = '0' WHERE last_action < NOW() - INTERVAL 1 MINUTE";
     $result = $this->inDB->query($sql);
       
     if($this->inDB->error())
@@ -173,7 +205,7 @@ class cms_model_ajaxchat
     return TRUE;     
   }
   
-  public function getMessages($skipsystem, $limit)
+  public function getMessages($skipsystem, $limit, $offset)
   {      
     if(!$limit or $limit > 25)
     {
@@ -185,9 +217,12 @@ class cms_model_ajaxchat
       $apx = " WHERE cms_ajaxchat_messages.user_id <> 0 ";
     }
     
-    $offset_sql = "SELECT * FROM cms_ajaxchat_messages $apx";
-    $offset_result = $this->inDB->query($offset_sql);
-    $offset = $this->inDB->num_rows($offset_result)-$limit;
+    if(!$offset)
+    {
+      $offset_sql = "SELECT * FROM cms_ajaxchat_messages $apx";
+      $offset_result = $this->inDB->query($offset_sql);
+      $offset = $this->inDB->num_rows($offset_result)-$limit;
+    }
     
     if($offset < 0)
     {

@@ -5,8 +5,25 @@ function routes_ajaxchat()
     '_uri'  => '/^ajaxchat\/view.html$/i',
     'do'    => 'view'
   );
+
+  $routes[] = array(
+    '_uri'  => '/^ajaxchat\/history.html$/i',
+    'do'    => 'history'
+  );  
   
-   $routes[] = array(
+  $routes[] = array(
+    '_uri'  => '/^ajaxchat\/history([0-9]+).html$/i',
+    'do'    => 'history',
+     1      => 'page'
+  );  
+  
+  $routes[] = array(
+    '_uri'  => '/^ajaxchat\/delete([0-9]+).html$/i',
+    'do'    => 'delete_mess',
+     1      => 'id'
+  );    
+  
+  $routes[] = array(
     '_uri'  => '/^ajaxchat\/get_userlist$/i',
     'do'    => 'get_userlist'
   ); 

@@ -42,6 +42,42 @@ function ajaxchat()
     }
   }
   
+  if($do == "history")
+  {
+    $page = $inCore->request('page', 'int', 0);
+    if($page < 1)
+    {
+      $page = 1;
+    }
+    $inPage->addPathway("Чат", "/ajaxchat");
+    $inPage->addPathway("История");
+    
+    $total = $model->totalMessages(TRUE);
+    
+    $pagination = cmsPage::getPagebar($total, $page, 50, '/ajaxchat/history%page%.html', array());
+    
+    $messages = $model->getMessages(TRUE,50,($page-1)*50);
+    $smarty = $inCore->initSmarty('components', 'com_ajaxchat_history.tpl');
+    $smarty->assign('messages', $messages);
+    $smarty->assign('is_admin',$inUser->is_admin);
+    $smarty->assign('pagination',$pagination);
+    $smarty->display('com_ajaxchat_history.tpl');
+  }
+  
+  if($do == "delete_mess")
+  {
+    $id = $inCore->request('id', 'int', 0);
+    if(!$inUser->is_admin or !$id)
+    {
+      $inCore->redirectBack();
+    }
+    else
+    {
+      $model->deleteMessage($id);
+      $inCore->redirectBack();
+    }
+  }
+  
   if($do == "get_userlist")
   {
     if($inUser->id)
