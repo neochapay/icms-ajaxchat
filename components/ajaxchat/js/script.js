@@ -4,7 +4,7 @@ var news = 0;
 var upd = 0;
 var hl = 0;
 var active_user;
-var enable_dev =0;
+
 $(document).ready(function(){
 	get_userlist();
 	get_messages();
@@ -95,9 +95,12 @@ function get_messages()
 	});
 	
 	$.each(str.dialogs,function(){
-	  from_id = this.from_id;
-	  $("#chatTopBar UL").append("<li id=\"open_"+this.from_id+"\" class=\"dialog\">"+this.from_nickname+"</div>");
-	  $("#open_"+from_id).click(function(){listTab("open_"+from_id)});
+	  if($('#open_'+from_id).text().length == 0)
+	  {
+	    from_id = this.from_id;
+	    $("#chatTopBar UL").append("<li id=\"open_"+this.from_id+"\" class=\"dialog\">"+this.from_nickname+"</div>");
+	    $("#open_"+from_id).click(function(){listTab("open_"+from_id)});
+	  }
 	})
       }
       var height = $("#chatLineHolder UL").height();
@@ -150,6 +153,12 @@ function sendMessage()
 	    if(upd == 0)
 	    {
 	      loadNewMessages();
+	    }
+	    
+	    if(id)
+	    {
+	      var act_nickname = $('#chatuser_'+active_user).text();
+	      $("#dialogLineHolder UL").append("<li class=\"mess_stub\" style=\"color:black\"><tt>00:00:00</tt> <b>"+act_nickname+"</b>:"+message+"</li>");
 	    }
 	  }
 	  else
@@ -212,10 +221,10 @@ function loadNewMessages()
       data:	"last_id="+last_id,
       success: function(json)
       {
-	var messages = jQuery.parseJSON(json);
-	if(messages)
+	var str = jQuery.parseJSON(json);
+	if(str.messages)
 	{
-	  $.each(messages,function(){
+	  $.each(str.messages,function(){
 	    if($("#mess_"+this.id).text().length == 0)
 	    {
 	      $("#chatLineHolder UL").append(formatMessage(this));
@@ -230,8 +239,8 @@ function loadNewMessages()
 	      news = 1;
 	    }
 	  });
-
-	  if(news == 1)
+	
+	 if(news == 1)
 	  {
 	    if(sound == 1)
 	    {
@@ -248,6 +257,23 @@ function loadNewMessages()
 	    hl = 0;
 	  }
 	  $("#chatLineHolder").scrollTop("99999999");
+	}
+	
+	if(str.dialogs)
+	{
+	  $.each(str.dialogs,function(){
+	    from_id = this.from_id;
+
+	    if($('#open_'+from_id).text().length == 0)
+	    {
+	      $("#chatTopBar UL").append("<li id=\"open_"+this.from_id+"\" class=\"dialog\">"+this.from_nickname+"</div>");
+	      $("#open_"+from_id).click(function(){listTab("open_"+from_id)});
+	    }
+	    else if($('#open_'+from_id).hasClass('active'))
+	    {
+	      loadDialog(from_id);
+	    }
+	  })
 	}
       }
     });
@@ -338,13 +364,13 @@ function loadDialog(id)
 
 function loadUser(id)
 {
-  if(enable_dev == 1)
+  if(active_user != id)
   {
-    if(active_user == id)
-    {
-      $(".userinfo").remove();
-      $("#chatuser_"+id).append("<div class=\"userinfo\"><div onClick=\"loadDialog("+id+")\">написать личное сообщение</div></div>")
-    }
+    username = $('#chatuser_'+id).text()
+    $("#chatTopBar UL").append("<li id=\"open_"+id+"\" class=\"dialog\">"+username+"</div>");
+    $("#open_"+id).click(function(){listTab("open_"+id)});    
+    listTab("open_"+id);
+    loadDialog(id);
   }
 }
 

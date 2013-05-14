@@ -211,15 +211,19 @@ function ajaxchat()
 	  echo "pass";
 	}
       }
+      else
+      {
+	$companion_id = str_replace("open_","",$id);
+	if($companion_id and is_numeric($companion_id))
+	{
+	  $inUser->sendMessage($inUser->id,$companion_id,$message);
+	  echo "pass";
+	}
+      }
       exit;
     }
-    else
-    {
-      $companion_id = str_replace("open_","",$id);
-      if($companion_id and is_numeric($companion_id))
-      {
-      }
-    }
+    echo "ACCESS ERROR";
+    exit;
   }
   
   if($do == "load_new")
@@ -230,14 +234,15 @@ function ajaxchat()
     {
       if(!$model->isBanned($inUser->id) or $inUser->is_admin)
       {
-	$messages = $model->getNewMessages($last_id,$inUser->id,$skipsystem);
+	$output['messages'] = $model->getNewMessages($last_id,$inUser->id,$skipsystem);
+	$output['dialogs'] = $model->getDialogs($inUser->id);
       }
       else
       {
-	$messages['error'] = 1;
-	$messages['error_message'] = "Вы забанены";
+	$output['error'] = 1;
+	$output['error_message'] = "Вы забанены";
       }
-      print json_encode($messages);
+      print json_encode($output);
     }
     exit;
   }
@@ -289,6 +294,7 @@ function ajaxchat()
     $output = array();
     $output['messages'] = $model->getDialog($inUser->id,$companion_id);
     print json_encode($output);
+    $model->readDialog($inUser->id,$companion_id);
     exit;
   }
   

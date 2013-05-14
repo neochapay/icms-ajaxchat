@@ -476,6 +476,7 @@ class cms_model_ajaxchat
       $output['is_online'] = "1";
       return $output;
     }
+    
     $sql = "SELECT cms_users.id,
     cms_users.login,
     cms_users.nickname,
@@ -507,13 +508,26 @@ class cms_model_ajaxchat
     return $output;
   }
   
-  public function getDialog($user_id,$companion_id)
+  public function getDialog($user_id,$companion_id,$limit,$onlynew)
   {
+    if(!$limit)
+    {
+      $limit = 15;
+    }
+    
+    if($onlynew)
+    {
+      $where = " AND is_new = 1 ";
+    }
+    
     $sql = "SELECT * FROM cms_user_msg 
       WHERE 
       to_id = $user_id AND from_id= $companion_id
       OR to_id = $companion_id AND from_id = $user_id
-      ORDER BY senddate ASC";
+      $where
+      ORDER BY senddate ASC
+      LIMIT $limit";
+      
     $result = $this->inDB->query($sql);
     
     if ($this->inDB->error()) 
@@ -541,6 +555,18 @@ class cms_model_ajaxchat
     return $output;
   }
   
+  public function readDialog($to_id,$from_id)
+  {
+    $sql = "UPDATE cms_user_msg SET is_new = 0 WHERE is_new = 1 AND to_id = $to_id AND from_id = $from_id"; 
+    $result = $this->inDB->query($sql);
+    
+    if ($this->inDB->error()) 
+    {
+      return false; 
+    }
+    return true;
+  }
+  
   public function getDialogs($user_id)
   {
   //Загружаем активные диалоги - тоесть сообщения личные которые пользователь не прочёл
@@ -551,6 +577,7 @@ class cms_model_ajaxchat
     INNER JOIN cms_users ON cms_users.id = cms_user_msg.from_id
     WHERE `cms_user_msg`.`to_id` = '$user_id'
     AND `cms_user_msg`.`is_new` = '1'";
+    
     $result = $this->inDB->query($sql);
     
     if ($this->inDB->error()) 
