@@ -41,7 +41,7 @@ $.ajax({
       {
 	$.each(str.messages,function(){
 	  $("#minichat UL").append(formatMessage(this));
-	    last_id = this.id;
+	  last_id = this.id;
 	});
       }
     }
@@ -50,19 +50,26 @@ setInterval(loadNewMessages, 5000);
 
 function formatMessage(mess)
 {
-  if(!mess.imageurl)
+  if(!mess.id)
   {
-    mess.imageurl = "nopic.jpg";
-  }
-  if(mess.to_id == "0")
-  {
-    var str = "<li id=\"mess_"+mess.id+"\"><b>"+mess.nickname+"</b>:"+mess.message+"</li>";
+    return false;
   }
   else
   {
-    var str = "<li id=\"mess_"+mess.id+"\"><b>"+mess.nickname+"</b> для <b>"+mess.to_nickname+"</b>:"+mess.message+"</li>";
+    if(!mess.imageurl)
+    {
+      mess.imageurl = "nopic.jpg";
+    }
+    if(mess.to_id == "0")
+    {
+      var str = "<li id=\"mess_"+mess.id+"\"><b>"+mess.nickname+"</b>:"+mess.message+"</li>";
+    }
+    else
+    {
+      var str = "<li id=\"mess_"+mess.id+"\"><b>"+mess.nickname+"</b> для <b>"+mess.to_nickname+"</b>:"+mess.message+"</li>";
+    }
+    return str;
   }
-  return str;
 }
 
 function loadNewMessages()
@@ -82,12 +89,16 @@ function loadNewMessages()
 	  $.each(messages,function(){
 	    if($("#mess_"+this.id).text().length == 0)
 	    {
-	      $("#minichat UL").append(formatMessage(this));
-	      if(last_id < this.id)
+	      var message = formatMessage(this);
+	      if(message)
 	      {
-		last_id = this.id;
+		$("#minichat UL").append();
+		if(last_id < message.id)
+		{
+		  last_id = message.id;
+		}
+		$("#minichat UL LI").first().remove();
 	      }
-	      $("#minichat UL LI").first().remove();
 	    }
 	  });
 	}
