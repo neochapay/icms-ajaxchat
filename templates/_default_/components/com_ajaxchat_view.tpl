@@ -17,7 +17,7 @@
         <div id="submitForm" style=" margin-right: 10px;">
             <input id="chatText" name="chatText" class="rounded" style="width: 100%; margin-bottom: 10px;" />
             <input type="submit" class="blueButton" value="Отправить" onClick="sendMessage()"/>
-            <div class="sysmesc"><input type="checkbox" id="sysmes" onChange="sysMes()"> Не показывать системные сообщения</div>
+            <div class="sysmesc"><input type="checkbox" id="sysmes" onChange="sysMes()" checked> Не показывать системные сообщения</div>
         </div>
     </div>
 </div>

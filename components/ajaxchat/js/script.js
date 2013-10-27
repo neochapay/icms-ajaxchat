@@ -37,6 +37,7 @@ $(document).ready(function(){
 	$("#chatrum").addClass("active");
 
 	$("#chatTopBar UL LI").click(function(){listTab($(this).attr("id"))});
+	
 });
 
 function get_userlist()
@@ -75,6 +76,7 @@ function get_messages()
   $.ajax({
     url:	'/ajaxchat/get_messages',
     type:	'post',
+    data:	'skipsystem=1',
     success:	function(json)
     {
       $("#chatLineHolder").html("<ul></ul>");
@@ -212,16 +214,30 @@ function onLineUsers()
 
 function loadNewMessages()
 {
+  if($('#sysmes').attr('checked'))
+  {
+    var skipsystem = 1;
+  }
+  else
+  {
+    var skipsystem = 0;
+  }
+  
   if(upd == 0)
   {
     upd = 1;
     $.ajax({
       url:	"/ajaxchat/load_new",
       type:	"post",
-      data:	"last_id="+last_id,
+      data:	"last_id="+last_id+"&skipsystem="+skipsystem,
       success: function(json)
       {
 	var str = jQuery.parseJSON(json);
+	if(!str)
+	{
+	  return false;
+	}
+	
 	if(str.messages)
 	{
 	  $.each(str.messages,function(){
@@ -326,16 +342,30 @@ function formatMessage(mess)
   }
   else if(mess.to_id == "0")
   {
-    var str = "<li id=\"mess_"+mess.id+"\" style=\"color:"+mess.color+"\"><tt>"+mess.time+"</tt> <b"; 
+    var str = "<li id=\"mess_"+mess.id+"\" style=\"color:"+mess.color+"\"><tt onClick=\"fixMess(this)\">"+mess.time+"</tt> <b"; 
     if(mess.login)
     {
-      str += " onClick=addLogin('"+mess.login+"')";
+      if(mess.user_id != active_user)
+      {
+	console.log(mess.user_id+"---"+active_user);
+	str += " onClick=addLogin('"+mess.login+"')";
+      }
     }
     str += ">"+mess.nickname+"</b>:"+mess.message+"</li>";
   }
   else
   {
-    var str = "<li id=\"mess_"+mess.id+"\" style=\"color:"+mess.color+"\"><tt>"+mess.time+"</tt> <b onClick=addLogin('"+mess.login+"')>"+mess.nickname+"</b> для <b onClick=addLogin('"+mess.to_login+"')>"+mess.to_nickname+"</b>:"+mess.message+"</li>";
+    var cls = "";
+    if(mess.to_id == active_user)
+    {
+      cls = "toyou";
+    }
+    var str = "<li class=\""+cls+"\" id=\"mess_"+mess.id+"\" style=\"color:"+mess.color+"\"><tt onClick=\"fixMess(this)\">"+mess.time+"</tt> <b onClick=addLogin('"+mess.login+"')>"+mess.nickname+"</b> для <b ";
+    if(mess.to_id != active_user)
+    {
+      str += "onClick=addLogin('"+mess.to_login+"')";
+    }
+    str += ">"+mess.to_nickname+"</b>:"+mess.message+"</li>";
   }
   return str;
 }
@@ -383,5 +413,21 @@ function sysMes()
   else
   {
     $(".sysmes").show();
+  }
+}
+
+function fixMess(mess)
+{
+  var id = $(mess).parent().attr("id");
+  if($("#"+id).hasClass("fixed"))
+  {
+    $("#"+id).removeClass("fixed");
+  }
+  else
+  {
+    var fcount = $(".fixed").size();
+    var top = 50+20*fcount;
+    $("#"+id).addClass("fixed");
+    $("#"+id).css("top",top+"px");
   }
 }
