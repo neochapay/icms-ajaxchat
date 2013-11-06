@@ -7,6 +7,8 @@
       <ul>
 	<li id="chatrum">Чат</li>
       </ul>
+      <div id="flag">
+      </div>
     </div>
     <div id="chatLineHolder"></div>
     <div id="dialogLineHolder"></div>
@@ -17,7 +19,11 @@
         <div id="submitForm" style=" margin-right: 10px;">
             <input id="chatText" name="chatText" class="rounded" style="width: 100%; margin-bottom: 10px;" />
             <input type="submit" class="blueButton" value="Отправить" onClick="sendMessage()"/>
-            <div class="sysmesc"><input type="checkbox" id="sysmes" onChange="sysMes()" checked> Не показывать системные сообщения</div>
+            <div class="sysmesc">
+	      <div class="icon" id="sysvoice" onClick="sysMes()" title="Системные сообщения"></div>
+	      <div class="icon" id="sound" onClick="sysSound()" title="Звуки в чате"></div>
+	      <div class="icon" id="help" onClick="console.log('Помощи ждать неоткуда,а люди настроены враждебно...')" title="Помощь"></div>
+	    </div>
         </div>
     </div>
 </div>

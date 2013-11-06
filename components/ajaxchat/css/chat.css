@@ -411,3 +411,59 @@ p.noChats,
   margin-left: -15px !important;
   padding-left: 15px;
 }
+
+#flag{
+  width: 16px;
+  height: 16px;
+  background: url("/components/ajaxchat/img/flags/flag-black.png") no-repeat;
+  margin-top: 7px;
+  margin-right: 9px;
+  float: right;
+}
+
+#flag.blue{
+  background: url("/components/ajaxchat/img/flags/flag-blue.png") no-repeat;
+}
+
+#flag.green{
+  background: url("/components/ajaxchat/img/flags/flag-green.png") no-repeat;
+}
+
+#flag.red{
+  background: url("/components/ajaxchat/img/flags/flag-red.png") no-repeat;
+}
+
+#flag.yellow{
+  background: url("/components/ajaxchat/img/flags/flag-yellow.png") no-repeat;
+}
+
+#sysvoice{
+  width: 16px;
+  height: 16px;
+  background: url("/components/ajaxchat/img/sysvoice_off.png") no-repeat;
+}
+
+#sysvoice.on{
+  background: url("/components/ajaxchat/img/sysvoice_on.png") no-repeat;
+}
+
+#sound{
+  width: 16px;
+  height: 16px;
+  background: url("/components/ajaxchat/img/audio-volume-on.png") no-repeat;
+}
+
+#help{
+  width: 16px;
+  height: 16px;
+  background: url("/components/ajaxchat/img/help.png") no-repeat;
+}
+
+#sound.off{
+  background: url("/components/ajaxchat/img/audio-volume-off.png") no-repeat;
+}
+
+.sysmesc .icon{
+  display: inline-block;
+  cursor: pointer;
+}

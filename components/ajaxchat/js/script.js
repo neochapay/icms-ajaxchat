@@ -3,6 +3,7 @@ var sound = 1;
 var news = 0;
 var upd = 0;
 var hl = 0;
+var skipsystem = 1;
 var active_user;
 
 $(document).ready(function(){
@@ -42,6 +43,8 @@ $(document).ready(function(){
 
 function get_userlist()
 {
+  $('#flag').removeClass();
+  $('#flag').addClass('yellow');
   $.ajax({
     url:	'/ajaxchat/get_userlist',
     type:   	'post',
@@ -51,6 +54,8 @@ function get_userlist()
 	var users = jQuery.parseJSON(json);
 	if(!users)
 	{
+	  $('#flag').removeClass();
+	  $('#flag').addClass('red');
 	  alert("Получены неверные данные: отсутствует список пользователей");
 	}
 	else
@@ -66,6 +71,8 @@ function get_userlist()
 	    }
 	    $("#chatUsers UL").append("<li class=\"chatuser\" id=\"chatuser_"+this.user_id+"\"><div onClick=\"loadUser("+this.user_id+")\"><img src=\"/images/users/avatars/small/"+this.imageurl+"\">"+this.nickname+"</div></li>");
 	  });
+	  $('#flag').removeClass();
+	  $('#flag').addClass('green');
 	}
       }
   });
@@ -73,6 +80,8 @@ function get_userlist()
 
 function get_messages()
 {
+  $('#flag').removeClass();
+  $('#flag').addClass('yellow');
   $.ajax({
     url:	'/ajaxchat/get_messages',
     type:	'post',
@@ -83,10 +92,13 @@ function get_messages()
       var str = jQuery.parseJSON(json);
       if(!str)
       {
+	$('#flag').addClass('red');
 	alert("Получены неверные данные: отсутствует список сообщений");
       }
       else if(str.error)
       {
+	$('#flag').removeClass();
+	$('#flag').addClass('red');
 	alert(str.error_message);
       }
       else
@@ -107,12 +119,16 @@ function get_messages()
       }
       var height = $("#chatLineHolder UL").height();
       $("#chatLineHolder").animate({"scrollTop":height},"fast");
+      $('#flag').removeClass();
+      $('#flag').addClass('green');
     }
   });
 }
 
 function sendMessage()
 {
+  $('#flag').removeClass();
+  $('#flag').addClass('yellow');
   var message = $("#chatText").val();
   var id = $(".active").attr("id");
 
@@ -165,17 +181,23 @@ function sendMessage()
 	  }
 	  else
 	  {
+	    $('#flag').removeClass();
+	    $('#flag').addClass('red');
 	    alert(answer);
 	  }
 	}
       });
     }
   }
+  $('#flag').removeClass();
+  $('#flag').addClass('green');
   $("#chatText").val("");
 }
 
 function onLineUsers()
 {
+  $('#flag').removeClass();
+  $('#flag').addClass('yellow');
   $.ajax({
     url:	"/ajaxchat/get_userlist",
     type:	"post",
@@ -207,6 +229,8 @@ function onLineUsers()
 	});
 	$(".oldOnlineUsers").remove();
       }
+      $('#flag').removeClass();
+      $('#flag').addClass('green');
     }
   });
 
@@ -214,14 +238,8 @@ function onLineUsers()
 
 function loadNewMessages()
 {
-  if($('#sysmes').attr('checked'))
-  {
-    var skipsystem = 1;
-  }
-  else
-  {
-    var skipsystem = 0;
-  }
+  $('#flag').removeClass();
+  $('#flag').addClass('yellow');
   
   if(upd == 0)
   {
@@ -235,6 +253,8 @@ function loadNewMessages()
 	var str = jQuery.parseJSON(json);
 	if(!str)
 	{
+	  $('#flag').removeClass();
+	  $('#flag').addClass('blue');
 	  return false;
 	}
 	
@@ -272,7 +292,13 @@ function loadNewMessages()
 	    news = 0;
 	    hl = 0;
 	  }
+	  $('#flag').addClass('green');
 	  $("#chatLineHolder").scrollTop("99999999");
+	}
+	else
+	{
+	  $('#flag').removeClass();
+	  $('#flag').addClass('green');
 	}
 	
 	if(str.dialogs)
@@ -347,7 +373,6 @@ function formatMessage(mess)
     {
       if(mess.user_id != active_user)
       {
-	console.log(mess.user_id+"---"+active_user);
 	str += " onClick=addLogin('"+mess.login+"')";
       }
     }
@@ -406,13 +431,29 @@ function loadUser(id)
 
 function sysMes()
 {
-  if($("#sysmes").attr("checked"))
+  if(skipsystem == 0)
   {
-    $(".sysmes").hide();
+    $("#sysvoice").removeClass("on");
+    skipsystem = 1;
   }
   else
   {
-    $(".sysmes").show();
+    $("#sysvoice").addClass("on");
+    skipsystem = 0;
+  }
+}
+
+function sysSound()
+{
+  if(sound == 1)
+  {
+    $("#sound").addClass("off");
+    sound = 0;
+  }
+  else
+  {
+    $("#sound").removeClass("off");
+    sound = 1;
   }
 }
 
