@@ -24,8 +24,14 @@ function ajaxchat()
 	{
 	  $model->addMessage(0,0,"К чату присоединяется ".$inUser->nickname);
 	}
+	
+	$bb_toolbar = cmsPage::getBBCodeToolbar('chatText', TRUE, 'forum', 'post');
+        $smilies    = cmsPage::getSmilesPanel('chatText');
+	
 	$model->UpdateOnlineList($inUser->id);
 	$smarty = $inCore->initSmarty('components', 'com_ajaxchat_view.tpl');
+	$smarty->assign('bb_toolbar', $bb_toolbar);
+	$smarty->assign('smilies', $smilies);
 	$smarty->display('com_ajaxchat_view.tpl');
       }
       else

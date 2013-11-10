@@ -17,6 +17,9 @@
     <div id="chatBottomBar" class="rounded">
     	<div class="tip"></div>
         <div id="submitForm" style=" margin-right: 10px;">
+	    <div class="usr_msg_bbcodebox">{$bb_toolbar}</div>
+	    {$smilies}
+	    {$autogrow}
             <input id="chatText" name="chatText" class="rounded" style="width: 100%; margin-bottom: 10px;" />
             <input type="submit" class="blueButton" value="Отправить" onClick="sendMessage()"/>
             <div class="sysmesc">
