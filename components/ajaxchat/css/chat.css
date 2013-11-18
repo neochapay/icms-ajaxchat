@@ -9,6 +9,7 @@
     list-style: none;
     padding-left: 0px;
     padding-top: 10px;
+overflow-x: hidden;height: 345px;    
 }
 
 #chatUsers UL A{
@@ -30,6 +31,8 @@
   padding-left: 10px;
   margin-bottom: -5px;
 }
+
+
 
 #chatLineHolder UL{
   list-style: none;
