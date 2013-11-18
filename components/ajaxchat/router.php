@@ -52,6 +52,11 @@ function routes_ajaxchat()
     '_uri'  => '/^ajaxchat\/get_dialogs$/i',
     'do'    => 'get_dialogs'
   );   
+
+  $routes[] = array(
+    '_uri'  => '/^ajaxchat\/userstatus$/i',
+    'do'    => 'userstatus'
+  );  
   
   $routes[] = array(
     '_uri'  => '/^ajaxchat\/get_converstation$/i',

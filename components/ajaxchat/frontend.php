@@ -28,6 +28,8 @@ function ajaxchat()
 	$bb_toolbar = cmsPage::getBBCodeToolbar('chatText', TRUE, 'forum', 'post');
         $smilies    = cmsPage::getSmilesPanel('chatText');
 	
+	$model->updateActive($inUser->id,1);
+	
 	$model->UpdateOnlineList($inUser->id);
 	$smarty = $inCore->initSmarty('components', 'com_ajaxchat_view.tpl');
 	$smarty->assign('bb_toolbar', $bb_toolbar);
@@ -301,6 +303,22 @@ function ajaxchat()
     $output['messages'] = $model->getDialog($inUser->id,$companion_id);
     print json_encode($output);
     $model->readDialog($inUser->id,$companion_id);
+    exit;
+  }
+  
+  if($do == "userstatus")
+  {
+    $status = $inCore->request('status', 'str');
+    if($status == "online")
+    {
+      $on_chat = 1;
+    }
+    else
+    {
+      $on_chat = 0;
+    }
+    
+    $model->updateActive($inUser->id,$on_chat);
     exit;
   }
   

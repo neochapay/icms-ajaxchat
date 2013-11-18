@@ -117,7 +117,7 @@ class cms_model_ajaxchat
   
   public function ClearOnline()
   {
-    $sql = "UPDATE cms_ajaxchat_users SET `online` = '0' WHERE last_action < NOW() - INTERVAL 1 MINUTE";
+    $sql = "UPDATE cms_ajaxchat_users SET `online` = '0', `on_chat` = '0' WHERE last_action < NOW() - INTERVAL 1 MINUTE";
     $result = $this->inDB->query($sql);
       
     if($this->inDB->error())
@@ -126,6 +126,18 @@ class cms_model_ajaxchat
     }
     return TRUE;    
   }
+  
+  public function updateActive($user_id,$on_chat)
+  {
+    $sql = "UPDATE cms_ajaxchat_users SET `on_chat` = '0' WHERE `user_id` = '$on_chat'";
+    $result = $this->inDB->query($sql);
+      
+    if($this->inDB->error())
+    {
+      return FALSE;
+    }
+    return TRUE;    
+  }  
   
   public function UpdateOnlineList($user_id)
   {
@@ -154,9 +166,9 @@ class cms_model_ajaxchat
   
   public function getOnline()
   {
-    $this->ClearOnline();
     $sql = "SELECT cms_ajaxchat_users.last_action,
     cms_ajaxchat_users.user_id,
+    cms_ajaxchat_users.on_chat,
     cms_users.login,
     cms_users.nickname,
     cms_user_profiles.imageurl

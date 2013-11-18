@@ -4,9 +4,35 @@ var news = 0;
 var upd = 0;
 var hl = 0;
 var skipsystem = 1;
+var click;
 var active_user;
 
 $(document).ready(function(){
+	$(window).blur(function() {
+	  if(click == 1)
+	  {
+	    $("#chatUsers LI#chatuser_"+active_user+" IMG.activestatus").attr("src","/components/ajaxchat/img/offline.png");
+	    $.ajax({
+	      url:	'/ajaxchat/userstatus',
+	      type:	'post',
+	      data:	'status=offlie'
+	    })
+	  }
+	  else
+	  {
+	    click = 1;
+	  }
+	});
+	
+	$(window).focus(function() {
+	  $("#chatUsers LI#chatuser_"+active_user+" IMG.activestatus").attr("src","/components/ajaxchat/img/online.png");
+	  $.ajax({
+	    url:	'/ajaxchat/userstatus',
+	    type:	'post',
+	    data:	'status=online'
+	  }) 
+	});
+	
 	get_userlist();
 	get_messages();
 	setInterval(loadNewMessages, 5000);
@@ -34,7 +60,7 @@ $(document).ready(function(){
 	      sendMessage();
 	    };
         });
-
+	
 	$("#chatrum").addClass("active");
 
 	$("#chatTopBar UL LI").click(function(){listTab($(this).attr("id"))});
@@ -69,7 +95,17 @@ function get_userlist()
 	    {
 	      active_user = this.user_id;
 	    }
-	    $("#chatUsers UL").append("<li class=\"chatuser\" id=\"chatuser_"+this.user_id+"\"><div onClick=\"loadUser("+this.user_id+")\"><img src=\"/images/users/avatars/small/"+this.imageurl+"\">"+this.nickname+"</div></li>");
+	    var userstring = '<li class="chatuser" id="chatuser_'+this.user_id+'"><a href="/users/'+this.login+'">';
+	    if(this.on_chat == "1")
+	    {
+	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/online.png">';
+	    }
+	    else
+	    {
+	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/offline.png">';
+	    }
+	    userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a></li>';
+	    $("#chatUsers UL").append(userstring);
 	  });
 	  $('#flag').removeClass();
 	  $('#flag').addClass('green');
@@ -215,7 +251,17 @@ function onLineUsers()
 
 	  if($("#chatuser_"+this.user_id).text().length == 0)
 	  {
-	    $("#chatUsers UL").append("<li class=\"chatuser\" id=\"chatuser_"+this.user_id+"\"><a href=\"/users/"+this.login+"\"><img src=\"/images/users/avatars/small/"+this.imageurl+"\">"+this.nickname+"</a></li>");
+	    var userstring = '<li class="chatuser" id="chatuser_'+this.user_id+'"><a href="/users/'+this.login+'">';
+	    if(this.on_chat == "1")
+	    {
+	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/online.png">';
+	    }
+	    else
+	    {
+	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/offline.png">';
+	    }
+	    userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a></li>';
+	    $("#chatUsers UL").append(userstring);
 	    if(sound == 1)
 	    {
 	      $f().play(0);
@@ -371,7 +417,7 @@ function formatMessage(mess)
     var str = "<li id=\"mess_"+mess.id+"\" style=\"color:"+mess.color+"\"><tt onClick=\"fixMess(this)\">"+mess.time+"</tt> <b"; 
     if(mess.login)
     {
-      if(mess.user_id != active_user)
+      if(mess.from_id != active_user)
       {
 	str += " onClick=addLogin('"+mess.login+"')";
       }

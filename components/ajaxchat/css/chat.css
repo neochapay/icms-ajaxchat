@@ -1,10 +1,7 @@
-/* Main chat container */
-
 #chatContainer{
 	position:relative;
 }
 
-/*Новое*/
 #chatUsers UL{
     list-style: none;
     padding-left: 0px;
@@ -28,7 +25,7 @@ overflow-x: hidden;height: 345px;
 #chatUsers UL LI IMG {
   width: 20px;
   padding-right: 5px;
-  padding-left: 10px;
+  margin-left: 3px;
   margin-bottom: -5px;
 }
 
@@ -473,4 +470,14 @@ p.noChats,
 
 .usr_msg_bbcodebox{
   background: none;
+}
+
+IMG.activestatus{
+  width: 8px !important;
+  height: 8px !important;
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+  margin-right: -9px;
+  position: relative;
+  z-index: 5;
 }
