@@ -12,9 +12,10 @@
     function install_component_ajaxchat()
     {
       $inDB = cmsDatabase::getInstance();
+
       $sql = "CREATE TABLE IF NOT EXISTS `cms_ajaxchat_banlist` (
 	      `user_id` int(11) NOT NULL
-	      ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+	      ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
       $inDB->query($sql);
 
       $sql = "CREATE TABLE IF NOT EXISTS `cms_ajaxchat_messages` (
@@ -24,7 +25,7 @@
 	      `message` mediumtext NOT NULL,
 	      `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	      PRIMARY KEY (`id`)
-	      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8";
+	      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;";
       $inDB->query($sql);
       
       $sql = "CREATE TABLE IF NOT EXISTS `cms_ajaxchat_users` (
@@ -32,7 +33,7 @@
 	      `last_action` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	      `color` text NOT NULL,
 	      `online` tinyint(4) NOT NULL,
-	      `on_chat` INT NOT NULL
+	      `on_chat` int(11) NOT NULL
 	      ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
       $inDB->query($sql);
       return true;
@@ -40,8 +41,6 @@
 
     function upgrade_component_ajaxchat()
     {
-      $inDB = cmsDatabase::getInstance();
-      $inDB->query("ALTER TABLE  `cms_ajaxchat_users` ADD  `on_chat` INT NOT NULL");
       return true;
     }
 
