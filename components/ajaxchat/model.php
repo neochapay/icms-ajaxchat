@@ -229,18 +229,6 @@ class cms_model_ajaxchat
       $apx = " WHERE cms_ajaxchat_messages.user_id <> 0 ";
     }
     
-    if(!$offset)
-    {
-      $offset_sql = "SELECT * FROM cms_ajaxchat_messages $apx";
-      $offset_result = $this->inDB->query($offset_sql);
-      $offset = $this->inDB->num_rows($offset_result)-$limit;
-    }
-    
-    if($offset < 0)
-    {
-      $offset = 0;
-    }
-
     $sql = "SELECT cms_ajaxchat_messages.id,
     cms_ajaxchat_messages.message,
     cms_ajaxchat_messages.time,
@@ -248,14 +236,12 @@ class cms_model_ajaxchat
     cms_ajaxchat_messages.user_id,
     cms_users.login,
     cms_users.nickname,
-    cms_user_profiles.imageurl,
     cms_ajaxchat_users.color as color
     FROM cms_ajaxchat_messages
     LEFT JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
-    LEFT JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id  
     LEFT JOIN cms_ajaxchat_users ON cms_ajaxchat_messages.user_id = cms_ajaxchat_users.user_id
     $apx
-    ORDER BY cms_ajaxchat_messages.id ASC LIMIT $offset,$limit";
+    ORDER BY cms_ajaxchat_messages.id DESC LIMIT $limit";
     $result = $this->inDB->query($sql);
     
     if ($this->inDB->error())
@@ -279,10 +265,10 @@ class cms_model_ajaxchat
 	$row['to_nickname'] = $to['nickname'];
 	$row['to_login'] = $to['login'];
 	$row['message'] = str_replace("/to ".$row['to_login'],"",$row['message']);
-      }      
+      }
       $output[] = $row;
     }
-    return $output;     
+    return array_reverse($output);     
   }
   
   public function getNewMessages($last_id,$user_id,$skipsystem)
@@ -607,6 +593,12 @@ class cms_model_ajaxchat
       $output[] = $row;
     }
     return $output;    
+  }
+  
+  public function clearOld($days)
+  {
+    $sql = "DELETE FROM  `cms_ajaxchat_messages` WHERE  `time` < DATE_SUB( NOW( ) , INTERVAL $days DAY )";
+    $result = $this->inDB->query($sql);
   }
 }
 ?>

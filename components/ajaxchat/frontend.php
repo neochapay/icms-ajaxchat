@@ -118,7 +118,7 @@ function ajaxchat()
     {
       $output = array();
       $output['messages'] = $model->getMessages($skipsystem,$count);
-      $output['dialogs'] = $model->getDialogs($inUser->id);
+      //$output['dialogs'] = $model->getDialogs($inUser->id);
       print json_encode($output);
     }
     exit;
@@ -325,6 +325,12 @@ function ajaxchat()
   if($do == "get_help")
   {
     print str_replace("\n","<br />",$cfg['help']);
+    exit;
+  }
+  
+  if($do == "clear")
+  {
+    $model->clearOld($cfg['history_clear']);
     exit;
   }
 }

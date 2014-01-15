@@ -62,6 +62,11 @@ function routes_ajaxchat()
     '_uri'  => '/^ajaxchat\/get_converstation$/i',
     'do'    => 'get_converstation'
   ); 
+  
+  $routes[] = array(
+    '_uri'  => '/^ajaxchat\/clear$/i',
+    'do'    => 'clear'
+  );   
   return $routes;
 }
 ?>
