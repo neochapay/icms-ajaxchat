@@ -3,6 +3,7 @@ function ajaxchat()
 {
   $inCore = cmsCore::getInstance();
   $inPage = cmsPage::getInstance();
+  $inPage->addPathway("Чат", "/ajaxchat"); 
   $inUser = cmsUser::getInstance();
   $inDB = cmsDatabase::getInstance();
   $inCore->loadModel('ajaxchat');
