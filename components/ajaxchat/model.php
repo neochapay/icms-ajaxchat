@@ -265,6 +265,7 @@ class cms_model_ajaxchat
 	$row['to_nickname'] = $to['nickname'];
 	$row['to_login'] = $to['login'];
 	$row['message'] = str_replace("/to ".$row['to_login'],"",$row['message']);
+	$row['message'] = str_replace('src="/','src="http://'.$_SERVER['HTTP_HOST']."/", $row['message']);
       }
       $output[] = $row;
     }
@@ -330,6 +331,7 @@ class cms_model_ajaxchat
 	$row['to_nickname'] = $to['nickname'];
 	$row['to_login'] = $to['login'];
 	$row['message'] = str_replace("/to ".$to['login'],"", $row['message']);
+	$row['message'] = str_replace('src="/','src="'.$_SERVER['HTTP_HOST']."/", $row['message']);
       }
       $output[] = $row;
     }
