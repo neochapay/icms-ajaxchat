@@ -481,3 +481,17 @@ IMG.activestatus{
   position: relative;
   z-index: 5;
 }
+
+.iconsright{
+    display: inline-block;
+    float: right;
+    margin-right: 43px;
+}
+
+.iconsright IMG{
+  cursor: pointer;
+}
+
+.startdialog{
+  display: none;
+}
