@@ -106,7 +106,7 @@ function get_userlist()
 	    }
 	    if(this.user_id != active_user)
 	    {
-	      userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a><div class="iconsright"><img class="startdialog" src="/components/ajaxchat/img/start-dialog.png"><img class="sendpublic" onclick="addLogin(\''+this.login+'\')" title="Отправить публичное сообщение" src="/components/ajaxchat/img/send_public.png"></div></li>';
+	      userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a><div class="iconsright"><img class="startdialog" onClick="getPrivateDialog(\''+this.user_id+'\')" src="/components/ajaxchat/img/start-dialog.png"><img class="sendpublic" onclick="addLogin(\''+this.login+'\')" title="Отправить публичное сообщение" src="/components/ajaxchat/img/send_public.png"></div></li>';
 	    }
 	    else
 	    {
@@ -157,7 +157,7 @@ function get_messages()
 	  if($('#open_'+from_id).text().length == 0)
 	  {
 	    from_id = this.from_id;
-	    $("#chatTopBar UL").append("<li id=\"open_"+this.from_id+"\" class=\"dialog\">"+this.from_nickname+"</div>");
+	    loadDialogTab(this);
 	    $("#open_"+from_id).click(function(){listTab("open_"+from_id)});
 	  }
 	})
@@ -270,7 +270,7 @@ function onLineUsers()
 	    {
 	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/offline.png">';
 	    }
-	    userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a><div class="iconsright"><img class="startdialog" src="/components/ajaxchat/img/start-dialog.png"><img class="sendpublic" onclick="addLogin(\''+this.login+'\')" title="Отправить публичное сообщение" src="/components/ajaxchat/img/send_public.png"></div></li>';
+	    userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a><div class="iconsright"><img class="startdialog" onClick="getPrivateDialog(\''+this.id+'\')" src="/components/ajaxchat/img/start-dialog.png"><img class="sendpublic" onclick="addLogin(\''+this.login+'\')" title="Отправить публичное сообщение" src="/components/ajaxchat/img/send_public.png"></div></li>';
 	    $("#chatUsers UL").append(userstring);
 	    if(sound == 1)
 	    {
@@ -364,7 +364,7 @@ function loadNewMessages()
 
 	    if($('#open_'+from_id).text().length == 0)
 	    {
-	      $("#chatTopBar UL").append("<li id=\"open_"+this.from_id+"\" class=\"dialog\">"+this.from_nickname+"</div>");
+	      loadDialogTab(this);
 	      $("#open_"+from_id).click(function(){listTab("open_"+from_id)});
 	    }
 	    else if($('#open_'+from_id).hasClass('active'))
@@ -473,12 +473,12 @@ function loadDialog(id)
   });
 }
 
-function loadUser(id)
+function getPrivateDialog(id)
 {
   if(active_user != id)
   {
     username = $('#chatuser_'+id).text()
-    $("#chatTopBar UL").append("<li id=\"open_"+id+"\" class=\"dialog\">"+username+"</div>");
+    loadDialogTab(new Object({from_id:id,from_nickname:username}));
     $("#open_"+id).click(function(){listTab("open_"+id)});    
     listTab("open_"+id);
     loadDialog(id);
@@ -527,4 +527,8 @@ function fixMess(mess)
     $("#"+id).addClass("fixed");
     $("#"+id).css("top",top+"px");
   }
+}
+
+function loadDialogTab(object){
+  $("#chatTopBar UL").append("<li id=\"open_"+object.from_id+"\" class=\"dialog\">"+object.from_nickname+"<a href='#' class='closedialog'></a></div>");
 }

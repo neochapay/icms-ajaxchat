@@ -495,3 +495,13 @@ IMG.activestatus{
 .startdialog{
   display: none;
 }
+
+#chatTopBar .dialog .closedialog{
+  width: 8px;
+  height: 8px;
+  background: url("/components/ajaxchat/img/close-dialog.png") no-repeat;
+  float: right;
+  position: relative;
+  top: 6px;
+  margin-left: 5px;
+}
