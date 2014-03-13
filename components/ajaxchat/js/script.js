@@ -104,7 +104,14 @@ function get_userlist()
 	    {
 	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/offline.png">';
 	    }
-	    userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a><div class="iconsright"><img class="startdialog" src="/components/ajaxchat/img/start-dialog.png"><img class="sendpublic" onclick="addLogin(\''+this.login+'\')" title="Отправить публичное сообщение" src="/components/ajaxchat/img/send_public.png"></div></li>';
+	    if(this.user_id != active_user)
+	    {
+	      userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a><div class="iconsright"><img class="startdialog" src="/components/ajaxchat/img/start-dialog.png"><img class="sendpublic" onclick="addLogin(\''+this.login+'\')" title="Отправить публичное сообщение" src="/components/ajaxchat/img/send_public.png"></div></li>';
+	    }
+	    else
+	    {
+	      userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a></li>';
+	    }
 	    $("#chatUsers UL").append(userstring);
 	  });
 	  $('#flag').removeClass();
@@ -263,7 +270,7 @@ function onLineUsers()
 	    {
 	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/offline.png">';
 	    }
-	    userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a></li>';
+	    userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a><div class="iconsright"><img class="startdialog" src="/components/ajaxchat/img/start-dialog.png"><img class="sendpublic" onclick="addLogin(\''+this.login+'\')" title="Отправить публичное сообщение" src="/components/ajaxchat/img/send_public.png"></div></li>';
 	    $("#chatUsers UL").append(userstring);
 	    if(sound == 1)
 	    {
