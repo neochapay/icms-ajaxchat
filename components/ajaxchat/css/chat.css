@@ -14,7 +14,7 @@ overflow-x: hidden;height: 345px;
 }
 
 #chatUsers UL LI{
-  width: 246px;
+  width: 100%;
   display: inline-block;
   padding-bottom: 3px;
   border-bottom: 2px solid white;
@@ -485,7 +485,6 @@ IMG.activestatus{
 .iconsright{
     display: inline-block;
     float: right;
-    margin-right: 43px;
 }
 
 .iconsright IMG{
