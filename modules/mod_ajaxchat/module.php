@@ -19,13 +19,7 @@ function mod_ajaxchat($module_id)
         return trim($res);
     }
 
-    $sql = "SELECT cms_ajaxchat_online.*,
-    cms_users.login,
-    cms_users.nickname
-    FROM cms_ajaxchat_online
-    INNER JOIN cms_users ON cms_users.id = cms_ajaxchat_online.user_id
-    WHERE last_action < NOW() - INTERVAL 15 MINUTES
-    ";
+    $sql = "SELECT * FROM cms_ajaxchat_users WHERE `online` = 1";
     $result = $inDB->query($sql);
     
     $chat_num = $inDB->num_rows($result);
