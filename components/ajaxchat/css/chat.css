@@ -42,9 +42,13 @@ overflow-x: hidden;height: 345px;
   margin-left: 0px;
 }
 
+#chatLineHolder UL LI B{
+  cursor: pointer;
+}
 
 #chatLineHolder UL LI IMG{
-  max-width: 380px;
+  max-width: 100%;
+  max-height: 250px;
 }
 /*Тулбар*/
 
