@@ -129,7 +129,7 @@ class cms_model_ajaxchat
   
   public function updateActive($user_id,$on_chat)
   {
-    $sql = "UPDATE cms_ajaxchat_users SET `on_chat` = '0' WHERE `user_id` = '$on_chat'";
+    $sql = "UPDATE cms_ajaxchat_users SET `on_chat` = '$on_chat' WHERE `user_id` = '$user_id'";
     $result = $this->inDB->query($sql);
       
     if($this->inDB->error())
@@ -236,9 +236,11 @@ class cms_model_ajaxchat
     cms_ajaxchat_messages.user_id,
     cms_users.login,
     cms_users.nickname,
+    cms_user_profiles.imageurl,
     cms_ajaxchat_users.color as color
     FROM cms_ajaxchat_messages
     LEFT JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
+    LEFT JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id   
     LEFT JOIN cms_ajaxchat_users ON cms_ajaxchat_messages.user_id = cms_ajaxchat_users.user_id
     $apx
     ORDER BY cms_ajaxchat_messages.id DESC LIMIT $limit";
@@ -265,8 +267,14 @@ class cms_model_ajaxchat
 	$row['to_nickname'] = $to['nickname'];
 	$row['to_login'] = $to['login'];
 	$row['message'] = str_replace("/to ".$row['to_login'],"",$row['message']);
-	$row['message'] = str_replace('src="/','src="http://'.$_SERVER['HTTP_HOST']."/", $row['message']);
       }
+      $row['message'] = str_replace('src="/','src="http://'.$_SERVER['HTTP_HOST']."/", $row['message']);
+      $row['message_color'] = $row['color'];
+      if(!$row['imageurl'] or !file($_SERVER['DOCUMENT_ROOT']."/images/users/avatars/small/".$row['imageurl']))
+      {
+	$row['imageurl'] = "nopic.jpg";
+      }
+      $row['imageurl'] = "http://".$_SERVER['HTTP_HOST']."/images/users/avatars/small/".$row['imageurl'];
       $output[] = $row;
     }
     return array_reverse($output);     
@@ -331,8 +339,13 @@ class cms_model_ajaxchat
 	$row['to_nickname'] = $to['nickname'];
 	$row['to_login'] = $to['login'];
 	$row['message'] = str_replace("/to ".$to['login'],"", $row['message']);
-	$row['message'] = str_replace('src="/','src="'.$_SERVER['HTTP_HOST']."/", $row['message']);
       }
+      $row['message'] = str_replace('src="/','src="http://'.$_SERVER['HTTP_HOST']."/", $row['message']);
+      if(!$row['imageurl'] or !file($_SERVER['DOCUMENT_ROOT']."/images/users/avatars/small/".$row['imageurl']))
+      {
+	$row['imageurl'] = "nopic.jpg";
+      }      
+      $row['imageurl'] = "http://".$_SERVER['HTTP_HOST']."/images/users/avatars/small/".$row['imageurl'];
       $output[] = $row;
     }
     return $output;     

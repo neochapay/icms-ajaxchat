@@ -9,29 +9,27 @@ var active_user;
 
 $(document).ready(function(){
 	$(window).blur(function() {
-	  if(click == 1)
-	  {
-	    $("#chatUsers LI#chatuser_"+active_user+" IMG.activestatus").attr("src","/components/ajaxchat/img/offline.png");
 	    $.ajax({
 	      url:	'/ajaxchat/userstatus',
 	      type:	'post',
-	      data:	'status=offlie'
+	      data:	'status=offline'
 	    })
-	  }
-	  else
-	  {
+	});
+
+	$(window).focus(function() {
+	    $.ajax({
+	      url:	'/ajaxchat/userstatus',
+	      type:	'post',
+	      data:	'status=online'
+	    })	    
 	    click = 1;
-	  }
 	});
 	
-	$(window).focus(function() {
-	  $("#chatUsers LI#chatuser_"+active_user+" IMG.activestatus").attr("src","/components/ajaxchat/img/online.png");
-	  $.ajax({
-	    url:	'/ajaxchat/userstatus',
-	    type:	'post',
-	    data:	'status=online'
-	  }) 
-	});
+	$.ajax({
+	  url:	'/ajaxchat/userstatus',
+	  type:	'post',
+	  data:	'status=online'
+	}) 
 	
 	get_userlist();
 	get_messages();
@@ -96,7 +94,7 @@ function get_userlist()
 	      active_user = this.user_id;
 	    }
 	    var userstring = '<li class="chatuser" id="chatuser_'+this.user_id+'" user-id="'+this.user_id+'"><a href="/users/'+this.login+'">';
-	    if(this.on_chat == "1")
+	    if(this.on_chat == 1)
 	    {
 	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/online.png">';
 	    }
@@ -262,7 +260,8 @@ function onLineUsers()
 	  if($("#chatuser_"+this.user_id).text().length == 0)
 	  {
 	    var userstring = '<li class="chatuser" id="chatuser_'+this.user_id+'"><a href="/users/'+this.login+'">';
-	    if(this.on_chat == "1")
+	    
+	    if(this.on_chat == 1)
 	    {
 	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/online.png">';
 	    }
@@ -270,6 +269,7 @@ function onLineUsers()
 	    {
 	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/offline.png">';
 	    }
+	    
 	    userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a><div class="iconsright"><img class="startdialog" onClick="getPrivateDialog(\''+this.id+'\')" src="/components/ajaxchat/img/start-dialog.png"><img class="sendpublic" onclick="addLogin(\''+this.login+'\')" title="Отправить публичное сообщение" src="/components/ajaxchat/img/send_public.png"></div></li>';
 	    $("#chatUsers UL").append(userstring);
 	    if(sound == 1)
@@ -280,6 +280,15 @@ function onLineUsers()
 	  }
 	  else
 	  {
+	    if(this.on_chat == 1)
+	    {
+	      $("#chatuser_"+this.user_id+" IMG.activestatus").attr("src","/components/ajaxchat/img/online.png");
+	    }
+	    else
+	    {
+	      $("#chatuser_"+this.user_id+" IMG.activestatus").attr("src","/components/ajaxchat/img/offline.png");
+	    }
+	    
 	    $("#chatuser_"+this.user_id).removeClass("oldOnlineUsers");
 	  }
 	});
