@@ -3,17 +3,22 @@ var sound = 1;
 var news = 0;
 var upd = 0;
 var hl = 0;
-var skipsystem = 1;
+var on_chat = 1;
+var skipsystem = 0;
+var newmessages_count = 0;
 var click;
 var active_user;
+var title;
 
 $(document).ready(function(){
+	title = $('title').text();
 	$(window).blur(function() {
 	    $.ajax({
 	      url:	'/ajaxchat/userstatus',
 	      type:	'post',
 	      data:	'status=offline'
 	    })
+	    on_chat = 0;
 	});
 
 	$(window).focus(function() {
@@ -21,8 +26,10 @@ $(document).ready(function(){
 	      url:	'/ajaxchat/userstatus',
 	      type:	'post',
 	      data:	'status=online'
-	    })	    
-	    click = 1;
+	    })
+	    on_chat = 1;
+	    newmessages_count = 0;
+	    $('title').text(title);
 	});
 	
 	$.ajax({
@@ -329,6 +336,13 @@ function loadNewMessages()
 	    if($("#mess_"+this.id).text().length == 0)
 	    {
 	      $("#chatLineHolder UL").append(formatMessage(this));
+	      
+	      if(on_chat == 0)
+	      {
+		newmessages_count++;
+		$('title').text("("+newmessages_count+") "+title);
+	      }
+	      
 	      if(last_id < this.id)
 	      {
 		last_id = this.id;
