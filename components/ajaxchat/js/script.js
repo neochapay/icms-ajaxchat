@@ -392,7 +392,7 @@ function loadNewMessages()
 	    }
 	    else if($('#open_'+from_id).hasClass('active'))
 	    {
-	      loadDialog(from_id);
+// 	      loadDialog(from_id);
 	    }
 	  })
 	}
@@ -411,15 +411,15 @@ function addLogin(login)
 function listTab(tab)
 {
   $("#chatTopBar UL LI").removeClass("active");
-  $("#"+tab).addClass("active");
+  $("#chatTopBar UL LI#"+tab).addClass("active");
   if(tab == "chatrum")
   {
+    $("#dialogLineHolder").hide();
     $("#chatLineHolder").show();
     $("#chatBottomBar").show();
-    $("#dialogLineHolder").hide();
     $("#chatUsers").show();
     $("#chatLineHolder").scrollTop("99999999");
-    id = "";
+    id = 0;
   }
   else
   {
@@ -430,7 +430,7 @@ function listTab(tab)
     if($("#"+tab).hasClass("dialog"))
     {
       id = tab.replace("open_","");
-      loadDialog(tab);
+//       loadDialog(tab);
     }
   }
 }
@@ -474,7 +474,7 @@ function formatMessage(mess)
   return str;
 }
 
-function loadDialog(id)
+/*function loadDialog(id)
 {
   $.ajax({
     url:	"/ajaxchat/get_converstation",
@@ -495,16 +495,22 @@ function loadDialog(id)
     }
   });
 }
-
+*/
 function getPrivateDialog(id)
 {
   if(active_user != id)
   {
-    username = $('#chatuser_'+id).text()
-    loadDialogTab(new Object({from_id:id,from_nickname:username}));
-    $("#open_"+id).click(function(){listTab("open_"+id)});    
-    listTab("open_"+id);
-    loadDialog(id);
+    $.ajax({
+      url:	"/ajaxchat/get_converstation",
+      type:	"post",
+      data:	"id="+id,
+      success: function(json)
+      {
+	var dialog = jQuery.parseJSON(json);
+	loadDialogTab(new Object({from_id:dialog.user.id,from_nickname:dialog.user.nickname}));
+	listTab("open_"+dialog.user.id);
+      }
+    });
   }
 }
 
@@ -553,5 +559,11 @@ function fixMess(mess)
 }
 
 function loadDialogTab(object){
-  $("#chatTopBar UL").append("<li id=\"open_"+object.from_id+"\" class=\"dialog\">"+object.from_nickname+"<a href='#' class='closedialog'></a></div>");
+  $("#chatTopBar UL").append("<li id=\"open_"+object.from_id+"\" onClick=\"listTab('open_"+object.from_id+"')\" class=\"dialog\">"+object.from_nickname+"<a class='closedialog' onClick=\"closedialog('open_"+object.from_id+"')\"></a></div>");
+}
+
+function closedialog(id)
+{
+  listTab("chatrum");
+  $("#chatTopBar UL #"+id).remove();
 }

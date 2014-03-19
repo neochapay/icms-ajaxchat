@@ -100,11 +100,12 @@ overflow-x: hidden;height: 345px;
 /*Диалоги*/
 #dialogLineHolder{
 	height:360px;
-	width:660px;
+	width:100%;
 	margin-bottom:20px;
 	overflow-y: auto;
 	overflow-x: hidden;
 	display: none;
+	background-color: white;
 }
 #dialogLineHolder UL{
 	padding-left: 8px;
