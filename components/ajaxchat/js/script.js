@@ -133,7 +133,7 @@ function get_messages()
   $.ajax({
     url:	'/ajaxchat/get_messages',
     type:	'post',
-    data:	'skipsystem=1',
+    data:	'skipsystem='+skipsystem,
     success:	function(json)
     {
       $("#chatLineHolder").html("<ul></ul>");
