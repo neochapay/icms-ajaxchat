@@ -98,7 +98,7 @@ overflow-x: hidden;height: 345px;
 
 
 /*Диалоги*/
-#dialogLineHolder{
+.dialogLineHolder{
 	height:360px;
 	width:100%;
 	margin-bottom:20px;
@@ -107,26 +107,26 @@ overflow-x: hidden;height: 345px;
 	display: none;
 	background-color: white;
 }
-#dialogLineHolder UL{
+.dialogLineHolder UL{
 	padding-left: 8px;
 	padding-top: 4px; 
 	list-style: none;
 }
 
-#dialogLineHolder UL LI{
+.dialogLineHolder UL LI{
   padding: 2px;
   margin: 2px;
   overflow: hidden;
 }
 
-#dialogLineHolder UL LI IMG.companion_image{
+.dialogLineHolder UL LI IMG.companion_image{
   float: left;
   height:64px;
   margin: 2px;
   padding-top: 2px;
 }
 
-#dialogLineHolder UL LI .title{
+.dialogLineHolder UL LI .title{
   margin-left: 74px;
   font-weight: bold;
   font-size: 10px;
@@ -135,7 +135,7 @@ overflow-x: hidden;height: 345px;
   text-align: center;
 }
 
-#dialogLineHolder UL LI .time{
+.dialogLineHolder UL LI .time{
   margin-left: 74px;
   font-size: 10px;
   padding-top: 2px;
@@ -143,7 +143,7 @@ overflow-x: hidden;height: 345px;
   text-align: center;
 }
 
-#dialogLineHolder UL LI .message{
+.dialogLineHolder UL LI .message{
   margin-left: 190px;
   font-size: 12px;
   padding-top: 2px;
@@ -152,7 +152,7 @@ overflow-x: hidden;height: 345px;
   overflow: hidden;
 }
 
-#dialogLineHolder UL LI .author_image{
+.dialogLineHolder UL LI .author_image{
   float: left;
 }
 /* Чат */

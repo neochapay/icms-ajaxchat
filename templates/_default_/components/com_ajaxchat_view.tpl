@@ -11,7 +11,7 @@
       </div>
     </div>
     <div id="chatLineHolder"></div>
-    <div id="dialogLineHolder"></div>
+    <div class="dialogLineHolder"></div>
     
     <div id="chatUsers" class="rounded"></div>
     <div id="chatBottomBar" class="rounded">
