@@ -517,9 +517,9 @@ function getPrivateDialog(id)
 	var dialog = jQuery.parseJSON(json);
 	loadDialogTab(new Object({from_id:dialog.user.id,from_nickname:dialog.user.nickname}));
 	listTab("open_"+dialog.user.id);
-	if(dialog.messages.length == 0)
+	if(!dialog.messages)
 	{
-	  $(".dialogLineHolder").append('<div class="nomess">Ваша переписка пуста</div>');
+	  $(".dialogLineHolder").html('<div class="nomess-private">Ваша переписка пуста<br />Начните общение прямо сейчас</div>');
 	}
       }
     });
