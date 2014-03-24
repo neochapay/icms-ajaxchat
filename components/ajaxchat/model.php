@@ -176,6 +176,7 @@ class cms_model_ajaxchat
     INNER JOIN cms_users ON cms_ajaxchat_users.user_id = cms_users.id
     INNER JOIN cms_user_profiles ON cms_ajaxchat_users.user_id = cms_user_profiles.user_id
     WHERE cms_ajaxchat_users.online = 1
+    GROUP BY cms_ajaxchat_users.user_id
     ";
     $result = $this->inDB->query($sql);
 
@@ -239,11 +240,13 @@ class cms_model_ajaxchat
     cms_user_profiles.imageurl,
     cms_ajaxchat_users.color as color
     FROM cms_ajaxchat_messages
-    LEFT JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
-    LEFT JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id   
-    LEFT JOIN cms_ajaxchat_users ON cms_ajaxchat_messages.user_id = cms_ajaxchat_users.user_id
+    INNER JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
+    INNER JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id   
+    INNER JOIN cms_ajaxchat_users ON cms_ajaxchat_messages.user_id = cms_ajaxchat_users.user_id
     $apx
-    ORDER BY cms_ajaxchat_messages.id DESC LIMIT $limit";
+    GROUP BY cms_ajaxchat_messages.id
+    ORDER BY cms_ajaxchat_messages.id DESC
+    LIMIT $limit";
     $result = $this->inDB->query($sql);
     
     if ($this->inDB->error())
