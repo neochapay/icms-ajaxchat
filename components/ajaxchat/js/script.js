@@ -106,6 +106,14 @@ $(document).ready(function(){
 
 	$("#chatTopBar UL LI").click(function(){listTab($(this).attr("id"))});
 	
+	$(".color A").click(function(){
+	  $.ajax({
+	    url:	'/ajaxchat/send_message',
+	    type:	'post',
+	    data:	'message=/color&id=chatrum'
+	  });
+	  return false;
+	})
 });
 
 function get_userlist()
