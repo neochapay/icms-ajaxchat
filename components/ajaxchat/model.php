@@ -68,7 +68,7 @@ class cms_model_ajaxchat
   
   public function CheckUser($user_id)
   {
-    $sql = "SELECT * FROM cms_ajaxchat_users WHERE user_id = $user_id";
+    $sql = "SELECT * FROM cms_ajaxchat_users WHERE user_id = $user_id AND online = 1";
     $result = $this->inDB->query($sql);
     
     if($this->inDB->error())
