@@ -493,10 +493,7 @@ function formatMessage(mess)
     var str = "<li id=\"mess_"+mess.id+"\" style=\"color:"+mess.color+"\"><tt>"+mess.time+"</tt> <b"; 
     if(mess.login)
     {
-      if(mess.from_id != active_user)
-      {
-	str += " data-login='"+mess.login+"'";
-      }
+      str += " data-login='"+mess.login+"'";
     }
     str += ">"+mess.nickname+"</b>:"+mess.message+"</li>";
   }
