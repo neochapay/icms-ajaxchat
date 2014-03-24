@@ -103,17 +103,9 @@ $(document).ready(function(){
         });
 	
 	$("#chatrum").addClass("active");
-
-	$("#chatTopBar UL LI").click(function(){listTab($(this).attr("id"))});
 	
-	$(".color A").click(function(){
-	  $.ajax({
-	    url:	'/ajaxchat/send_message',
-	    type:	'post',
-	    data:	'message=/color&id=chatrum'
-	  });
-	  return false;
-	})
+	$("#chatTopBar UL LI").click(function(){listTab($(this).attr("id"))});
+	$('select[name="colorpicker"]').simplecolorpicker({picker: true, theme: 'glyphicons'});;
 });
 
 function get_userlist()

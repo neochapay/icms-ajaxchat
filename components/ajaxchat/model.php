@@ -18,9 +18,8 @@ class cms_model_ajaxchat
     return $cfg;
   }
 
-  public function getColor()
+  public function allColors()
   {
-        //Определяем цвета сообщений чата
     $colors = array();
     $colors[] = '#996600';
     $colors[] = '#cc9900';
@@ -35,6 +34,15 @@ class cms_model_ajaxchat
     $colors[] = '#006600';
     $colors[] = '#009900';
     $colors[] = '#66cc33';  
+
+    return $colors;
+  }
+  
+  public function getColor()
+  {
+    //Определяем цвета сообщений чата
+    
+    $colors = $this->allColors();
     
     $color_count = count($colors);
     $color_rnd = rand(0,$color_count-1);
@@ -617,6 +625,21 @@ class cms_model_ajaxchat
   {
     $sql = "DELETE FROM  `cms_ajaxchat_messages` WHERE  `time` < DATE_SUB( NOW( ) , INTERVAL $days DAY )";
     $result = $this->inDB->query($sql);
+  }
+  
+  public function getUserColor($user_id)
+  {
+    $sql = "SELECT color FROM cms_ajaxchat_users WHERE user_id = $user_id";
+    $result = $this->inDB->query($sql);
+    $user = $this->inDB->fetch_assoc($result);
+    return $user['color'];
+  }
+  
+  public function setUserColor($user_id,$color)
+  {
+    $sql = "UPDATE cms_ajaxchat_users SET `color` = '$color' WHERE `user_id` = $user_id";
+    $result = $this->inDB->query($sql);
+    return TRUE;
   }
 }
 ?>

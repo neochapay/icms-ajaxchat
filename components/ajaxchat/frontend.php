@@ -35,6 +35,8 @@ function ajaxchat()
 	$smarty = $inCore->initSmarty('components', 'com_ajaxchat_view.tpl');
 	$smarty->assign('bb_toolbar', $bb_toolbar);
 	$smarty->assign('smilies', $smilies);
+	$smarty->assign('colors', $model->allColors());
+	$smarty->assign('user_color', $model->getUserColor($inUser->id));
 	$smarty->display('com_ajaxchat_view.tpl');
       }
       else
@@ -327,6 +329,20 @@ function ajaxchat()
   {
     print str_replace("\n","<br />",$cfg['help']);
     exit;
+  }
+  
+  if($do == "set_color")
+  {
+    if(!$inUser->id)
+    {
+      exit;
+    }
+    
+    $color = $inCore->request('color', 'str');
+    if(array_search($color,$model->allColors()))
+    {
+      $model->setUserColor($inUser->id,$color);
+    }
   }
   
   if($do == "clear")

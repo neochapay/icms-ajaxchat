@@ -18,7 +18,15 @@
     	<div class="tip"></div>
         <div id="submitForm" style=" margin-right: 10px;">
 	    <div class="usr_msg_bbcodebox">{$bb_toolbar}</div>
-	    <div class="color"><a href="#" title="Поменять цвет соощений"><img src="/components/ajaxchat/img/color.png"></a></div>
+	    <div class="scolor">
+	      <img src="/components/ajaxchat/img/color.png">
+	      <img src="/components/ajaxchat/img/color-right.png">
+	      <select name="colorpicker">
+		{foreach  key=id item=color from=$colors}
+		  <option value="{$color}" {if $color == $user_color}selected{/if}>{$color}</option>
+		{/foreach}
+	      </select>
+	    </div>
 	    {$smilies}
 	    {$autogrow}
             <input id="chatText" name="chatText" class="rounded" style="width: 100%; margin-bottom: 10px;" />
@@ -35,3 +43,4 @@
 <div id="player" style="display:block;width:0px;height:0px;"></div>
 <script src="/components/ajaxchat/js/fp/fp.min.js"></script>
 <script src="/components/ajaxchat/js/script.js"></script>
+<script src="/components/ajaxchat/js/colorpicker.js"></script>

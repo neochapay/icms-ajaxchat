@@ -66,7 +66,12 @@ function routes_ajaxchat()
   $routes[] = array(
     '_uri'  => '/^ajaxchat\/clear$/i',
     'do'    => 'clear'
-  );   
+  );
+  
+  $routes[] = array(
+    '_uri'  => '/^ajaxchat\/set_color$/i',
+    'do'    => 'set_color'
+  );
   return $routes;
 }
 ?>
