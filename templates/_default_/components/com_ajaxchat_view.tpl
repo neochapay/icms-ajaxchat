@@ -18,6 +18,7 @@
     	<div class="tip"></div>
         <div id="submitForm" style=" margin-right: 10px;">
 	    <div class="usr_msg_bbcodebox">{$bb_toolbar}</div>
+	    <div class="color"><a href="#" title="Поменять цвет соощений"><img src="/components/ajaxchat/img/color.png"></a></div>
 	    {$smilies}
 	    {$autogrow}
             <input id="chatText" name="chatText" class="rounded" style="width: 100%; margin-bottom: 10px;" />

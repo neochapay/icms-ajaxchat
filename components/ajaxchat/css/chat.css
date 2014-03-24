@@ -522,3 +522,10 @@ IMG.activestatus{
   bottom: 130px;
   left: 28px;  
 }
+
+.color{
+  display: inline-block;
+  top: 10px;
+  right: 10px;
+  position: absolute;
+}
