@@ -119,7 +119,6 @@ function ajaxchat()
     {
       $output = array();
       $output['messages'] = $model->getMessages($skipsystem,$count);
-      //$output['dialogs'] = $model->getDialogs($inUser->id);
       print json_encode($output);
     }
     exit;
@@ -251,13 +250,8 @@ function ajaxchat()
 	$output['error'] = 1;
 	$output['error_message'] = "Вы забанены";
       }
+      print json_encode($output);
     }
-    else
-    {
-      $output['error'] = 1;
-      $output['error_message'] = "Last ID is null";
-    }
-    print json_encode($output);
     exit;
   }
   
