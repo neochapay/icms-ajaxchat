@@ -358,6 +358,10 @@ function loadNewMessages()
       data:	"last_id="+last_id+"&skipsystem="+skipsystem,
       success: function(json)
       {
+	if(json.length < 10)
+	{
+	  return;
+	}
 	var str = jQuery.parseJSON(json);
 	if(!str)
 	{
