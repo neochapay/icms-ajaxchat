@@ -120,6 +120,7 @@ function ajaxchat()
     else
     {
       $output = array();
+      $output['skipsystem'] = $skipsystem;
       $output['messages'] = $model->getMessages($skipsystem,$count);
       print json_encode($output);
     }
@@ -240,20 +241,17 @@ function ajaxchat()
   {
     $last_id = $inCore->request('last_id', 'int');
     $skipsystem = $inCore->request('skipsystem', 'int');
-    if($last_id)
+    if(!$model->isBanned($inUser->id) or $inUser->is_admin)
     {
-      if(!$model->isBanned($inUser->id) or $inUser->is_admin)
-      {
-	$output['messages'] = $model->getNewMessages($last_id,$inUser->id,$skipsystem);
-	$output['dialogs'] = $model->getDialogs($inUser->id);
-      }
-      else
-      {
-	$output['error'] = 1;
-	$output['error_message'] = "Вы забанены";
-      }
-      print json_encode($output);
+      $output['messages'] = $model->getNewMessages($last_id,$inUser->id,$skipsystem);
+      $output['dialogs'] = $model->getDialogs($inUser->id);
     }
+    else
+    {
+      $output['error'] = 1;
+      $output['error_message'] = "Вы забанены";
+    }
+    print json_encode($output);
     exit;
   }
   

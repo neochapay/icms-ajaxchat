@@ -357,7 +357,7 @@ class cms_model_ajaxchat
   
   public function getNewMessages($last_id,$user_id,$skipsystem)
   {
-    if($this->inDB->get_last_id('cms_ajaxchat_messages') >= $last_id)
+    if($this->inDB->get_last_id('cms_ajaxchat_messages') >= $last_id and $last_id != 0)
     {
       return false;
     }
