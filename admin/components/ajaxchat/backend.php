@@ -34,6 +34,7 @@ if($opt=='saveconfig')
 {
     $cfg = array();
     $cfg['history_clear'] = $inCore->request('history_clear', 'int');
+    $cfg['use_cron'] = $inCore->request('use_cron', 'int');
     $cfg['help'] = $inCore->request('help', 'html');
     
     $inCore->saveComponentConfig('ajaxchat', $cfg);
@@ -46,48 +47,62 @@ if ($msg) { echo '<p class="success">'.$msg.'</p>'; cmsUser::sessionDel('ajaxcha
 ?>
 
 <form action="index.php?view=components&amp;do=config&amp;id=<?php echo $_REQUEST['id'];?>" method="post" name="optform" target="_self" id="optform">
-  <div id="config_tabs" style="margin-top:12px;">
+  <div id="config_tabs" style="margin-top:12px;" class="uitabs">
     <ul id="tabs">
-      <li><a href="#basic"><span>Общие</span></a></li>
-      <li><a href="#help"><span>Помощь</span></a></li>
+      <li><a href="#basic_t"><span>Общие</span></a></li>
+      <li><a href="#help_t"><span>Помощь</span></a></li>
     </ul>
+    <div id="basic_t">
+      <table width="700" border="0" cellpadding="10" cellspacing="0" class="proptable">
+	<tr>
+	  <td width="250">
+	    <strong>История: </strong><br/>
+	    <span class="hinttext">
+	      Сообщения какой давности будут удаляться из базы
+	    </span>
+	  </td>
+	  <td valign="top">
+	    <select name="history_clear" id="history_clear" style="width:350px">
+	      <option value="0" <?php if ($cfg['history_clear']=='0'){?>selected="selected"<?php } ?>>Сохранять все сообщения</option>
+	      <option value="1" <?php if ($cfg['history_clear']=='1'){?>selected="selected"<?php } ?>>Удалять сообщения старше одного дня</option>
+	      <option value="7" <?php if ($cfg['history_clear']=='7'){?>selected="selected"<?php } ?>>Удалять сообщения старше недели</option>
+	      <option value="30" <?php if ($cfg['history_clear']=='30'){?>selected="selected"<?php } ?>>Удалять сообщения старше месяца</option>
+	      <option value="365" <?php if ($cfg['history_clear']=='365'){?>selected="selected"<?php } ?>>Удалять сообщения старше года</option>
+	    </select>
+	  </td>
+	</tr>
+	<tr>
+	  <td width="250">
+	    <strong>Обновления: </strong><br/>
+	    <span class="hinttext">
+	      Как будут происходить обновления
+	    </span>
+	  </td>
+	  <td valign="top">
+	    <select name="use_cron" id="use_cron" style="width:350px">
+	      <option value="0" <?php if ($cfg['use_cron']=='0'){?>selected="selected"<?php } ?>>Автоматически (Большая нагрузка на БД)</option>
+	      <option value="1" <?php if ($cfg['use_cron']=='1'){?>selected="selected"<?php } ?>>Через CRON (Необходима настройка)</option>
+	    </select>
+	  </td>
+	</tr>      
+      </table>
+    </div>
+    <div id="help_t">
+      <table width="661" border="0" cellpadding="10" cellspacing="0" class="proptable">
+	<tr>
+	  <td width="250">
+	    <strong>Помощь </strong><br/>
+	    <span class="hinttext">
+	      Сообщение которое будет выводиться когда пользователь введёт /help
+	    </span>
+	  </td>
+	  <td valign="top">
+	    <textarea name="help" id="help" style="width:100%;height:150px;"><?php print $cfg['help']?></textarea>
+	  </td>
+	</tr>
+      </table>
+    </div>  
   </div>
-  <div id="basic">
-    <table width="661" border="0" cellpadding="10" cellspacing="0" class="proptable">
-      <tr>
-	<td width="250">
-	  <strong>История: </strong><br/>
-	  <span class="hinttext">
-	    Сообщения какой давности будут удаляться из базы
-	  </span>
-        </td>
-        <td valign="top">
-	  <select name="history_clear" id="history_clear" style="width:245px">
-	    <option value="0" <?php if ($cfg['history_clear']=='0'){?>selected="selected"<?php } ?>>Сохранять все сообщения</option>
-	    <option value="1" <?php if ($cfg['history_clear']=='1'){?>selected="selected"<?php } ?>>Удалять сообщения старше одного дня</option>
-	    <option value="7" <?php if ($cfg['history_clear']=='7'){?>selected="selected"<?php } ?>>Удалять сообщения старше недели</option>
-	    <option value="30" <?php if ($cfg['history_clear']=='30'){?>selected="selected"<?php } ?>>Удалять сообщения старше месяца</option>
-	    <option value="365" <?php if ($cfg['history_clear']=='365'){?>selected="selected"<?php } ?>>Удалять сообщения старше года</option>
-	  </select>
-        </td>
-      </tr>
-    </table>
-  </div>
-  <div id="help">
-    <table width="661" border="0" cellpadding="10" cellspacing="0" class="proptable">
-      <tr>
-	<td width="250">
-	  <strong>Помощь </strong><br/>
-	  <span class="hinttext">
-	    Сообщение которое будет выводиться когда пользователь введёт /help
-	  </span>
-        </td>
-        <td valign="top">
-	  <textarea name="help" id="help" style="width:100%;height:150px;"><?php print $cfg['help']?></textarea>
-        </td>
-      </tr>
-    </table>
-  </div>  
   <p>
     <input name="opt" type="hidden" value="saveconfig" />
     <input name="save" type="submit" id="save" value="Сохранить" />
@@ -95,6 +110,6 @@ if ($msg) { echo '<p class="success">'.$msg.'</p>'; cmsUser::sessionDel('ajaxcha
   </p>
 </form>
 
-<script type="text/javascript">
+<!--<script type="text/javascript">
   $('#config_tabs > ul#tabs').tabs();
-</script>
+</script>-->

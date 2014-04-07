@@ -14,7 +14,8 @@ class cms_model_ajaxchat
   {
     $cfg = array();
     $cfg['history_clear'] = 0;
-    $cfg['help'] = "Доступные команды:\n/sound on - Включение звуков\n/sound off - Выключение звуков\n/me - Сообщение в третьем лице\n/color - Смена цвета";
+    $cfg['use_cron'] = 0;
+    $cfg['help'] = "Доступные команды:\n/me - Сообщение в третьем лице\n";
     return $cfg;
   }
 
@@ -213,7 +214,11 @@ class cms_model_ajaxchat
   
   public function UpdateOnlineList($user_id)
   {
-    $this->ClearOnline();
+    if(!$this->config['use_cron'])
+    {
+      $this->ClearOnline();
+    }
+    
     if($this->CheckUser($user_id))
     {
       $sql = "UPDATE cms_ajaxchat_users SET last_action = NOW() , `online` = '1' WHERE user_id = $user_id";

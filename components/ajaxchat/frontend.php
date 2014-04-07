@@ -348,5 +348,14 @@ function ajaxchat()
     $model->clearOld($cfg['history_clear']);
     exit;
   }
+  
+  if($do == "cron")
+  {
+    if($cfg['use_cron'])
+    {
+      $model->ClearOnline();
+    }
+    exit;
+  }
 }
 ?>
