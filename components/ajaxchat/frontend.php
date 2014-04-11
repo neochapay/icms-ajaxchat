@@ -240,6 +240,10 @@ function ajaxchat()
   if($do == "load_new")
   {
     $last_id = $inCore->request('last_id', 'int');
+    if(!$last_id)
+    {
+      exit;
+    }
     $skipsystem = $inCore->request('skipsystem', 'int');
     if(!$model->isBanned($inUser->id) or $inUser->is_admin)
     {
