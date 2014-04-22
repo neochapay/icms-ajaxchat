@@ -9,6 +9,7 @@ var newmessages_count = 0;
 var click;
 var active_user;
 var title;
+var notify_count = 0;
 
 $(document).on("click", "a.closedialog", function() {
   listTab("chatrum");
@@ -381,6 +382,10 @@ function loadNewMessages()
 	      {
 		newmessages_count++;
 		$('title').text("("+newmessages_count+") "+title);
+		if(this.to_id == active_user)
+		{
+		  newMessage(this.message,"ajaxchat_public",this.nickname,this.imageurl)
+		}
 	      }
 	      
 	      if(last_id < this.id)
@@ -559,3 +564,30 @@ function sysSound()
 function loadDialogTab(object){
   $("#chatTopBar UL").append("<li id=\"open_"+object.from_id+"\" id='open_"+object.from_id+"' class=\"dialog\">"+object.from_nickname+"<a class='closedialog' id='open_"+object.from_id+"'\"></a></div>");
 }
+
+
+$(window).on("click", requestPermissionNotification);
+
+ 
+function requestPermissionNotification() {
+  if(Notification.permission.toLowerCase() != "granted")
+  {
+    Notification.requestPermission( function(result) { "granted" } );
+  }
+}
+
+function newMessage(body,tag,theme,icon) 
+{
+  if(Notification.permission.toLowerCase() != "granted")
+  {
+    return false;
+  }
+  
+  var params = {
+    body : (body) ? body : "",
+    tag : (tag) ? tag : "",
+    icon : (icon) ? icon : ""
+  };
+  
+  new Notification(theme, params);
+};
