@@ -115,11 +115,29 @@ class cms_model_ajaxchat
     return $color;
   }
   
+  public function getUser($login)
+  {
+    $sql = "SELECT * FROM cms_users WHERE login = '".$login."'";
+    $result = $this->inDB->query($sql);
+    if($this->inDB->error())
+    {
+      return FALSE;
+    }
+    
+    if(!$this->inDB->num_rows($result))
+    {
+      return FALSE;
+    }    
+    return $this->inDB->fetch_assoc($result);
+    
+  }
+  
   public function changeColor($user_id)
   {
     $color = $this->getColor();
     $sql = "UPDATE cms_ajaxchat_users SET `color` = '$color' WHERE `user_id` = '$user_id'";
     $result = $this->inDB->query($sql);
+    return TRUE;
   }
   
   public function CheckOnline($user_id)
@@ -299,7 +317,11 @@ class cms_model_ajaxchat
   {      
     if(!$limit or $limit > 25)
     {
-      $limit = 25;
+      $limit = "0,25";
+    }
+    else
+    {
+      $limit = "0,$limit";
     }
     
     if($skipsystem)
@@ -311,15 +333,8 @@ class cms_model_ajaxchat
     cms_ajaxchat_messages.message,
     cms_ajaxchat_messages.time,
     cms_ajaxchat_messages.to_id,
-    cms_ajaxchat_messages.user_id,
-    cms_users.login,
-    cms_users.nickname,
-    cms_user_profiles.imageurl,
-    cms_ajaxchat_users.color as color
+    cms_ajaxchat_messages.user_id
     FROM cms_ajaxchat_messages
-    LEFT JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
-    LEFT JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id   
-    LEFT JOIN cms_ajaxchat_users ON cms_ajaxchat_messages.user_id = cms_ajaxchat_users.user_id
     $apx
     GROUP BY cms_ajaxchat_messages.id
     ORDER BY cms_ajaxchat_messages.id DESC
@@ -340,10 +355,18 @@ class cms_model_ajaxchat
     while ($row = $this->inDB->fetch_assoc($result))
     {
       $row['time'] = substr($row['time'],10);
-      
+      if(!isset($user[$row['user_id']]))
+      {
+	$user[$row['user_id']] = $this->inUser->loadUser($row['user_id']);
+      }
+      $row['color'] = $this->getUserColor($row['user_id']);
+      $row['login'] = $user[$row['user_id']]['login'];
+      $row['nickname'] = $user[$row['user_id']]['nickname'];
+      $row['imageurl'] = $user[$row['user_id']]['imageurl'];      
+
       if($row['to_id'])
       {
-	$to = $this->getUserByID($row['to_id']);
+	$to = $this->inUser->loadUser($row['to_id']);
 	$row['to_nickname'] = $to['nickname'];
 	$row['to_login'] = $to['login'];
 	$row['message'] = str_replace("/to ".$row['to_login'],"",$row['message']);
@@ -377,15 +400,8 @@ class cms_model_ajaxchat
     cms_ajaxchat_messages.message,
     cms_ajaxchat_messages.time,
     cms_ajaxchat_messages.to_id,
-    cms_ajaxchat_messages.user_id,
-    cms_users.login,
-    cms_users.nickname,
-    cms_user_profiles.imageurl,
-    cms_ajaxchat_users.color as color
+    cms_ajaxchat_messages.user_id
     FROM cms_ajaxchat_messages
-    LEFT JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
-    LEFT JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id    
-    LEFT JOIN cms_ajaxchat_users ON cms_ajaxchat_messages.user_id = cms_ajaxchat_users.user_id
     WHERE cms_ajaxchat_messages.id > $last_id
     $apx
     ORDER BY cms_ajaxchat_messages.id ASC";
@@ -405,6 +421,15 @@ class cms_model_ajaxchat
     while ($row = $this->inDB->fetch_assoc($result))
     {
       $row['time'] = substr($row['time'],10);
+      if(!isset($user[$row['user_id']]))
+      {
+	$user[$row['user_id']] = $this->inUser->loadUser($row['user_id']);
+      }
+      $row['login'] = $user[$row['user_id']]['login'];
+      $row['nickname'] = $user[$row['user_id']]['nickname'];
+      $row['imageurl'] = $user[$row['user_id']]['imageurl'];  
+      $row['color'] = $this->getUserColor($row['user_id']);
+      
       if($row['to_id'] == $this->inUser->id)
       {
 	$row["hl"] = true;
@@ -415,7 +440,7 @@ class cms_model_ajaxchat
       }
       if($row['to_id'])
       {
-	$to = $this->getUserByID($row['to_id']);
+	$to = $this->inUser->loadUser($row['to_id']);
 	$row['to_nickname'] = $to['nickname'];
 	$row['to_login'] = $to['login'];
 	$row['message'] = str_replace("/to ".$to['login'],"", $row['message']);
@@ -430,20 +455,6 @@ class cms_model_ajaxchat
     }
     return $output;     
   }  
-  
-  public function getUser($login)
-  {
-    $sql = "SELECT * FROM cms_users WHERE login = '".$login."'";
-    $result = $this->inDB->query($sql);
-    return $this->inDB->fetch_assoc($result);
-  }  
-  
-  public function getUserByID($id)
-  {
-    $sql = "SELECT * FROM cms_users WHERE id = '".$id."'";
-    $result = $this->inDB->query($sql);
-    return $this->inDB->fetch_assoc($result);
-  }    
   
   public function addToBan($user_id)
   {
@@ -640,7 +651,7 @@ class cms_model_ajaxchat
       $row['time'] = substr($row['senddate'],10);
       $row['to_id'] = 0;
       
-      $send_user = $this->getUserByID($row["from_id"]);
+      $send_user = $this->inUser->loadUser($row["from_id"]);
       $row['nickname'] = $send_user['nickname'];
       
       $output[] = $row;
@@ -701,6 +712,10 @@ class cms_model_ajaxchat
     $sql = "SELECT color FROM cms_ajaxchat_users WHERE user_id = $user_id";
     $result = $this->inDB->query($sql);
     $user = $this->inDB->fetch_assoc($result);
+    if(!$user)
+    {
+      return "#000000";
+    }
     return $user['color'];
   }
   
