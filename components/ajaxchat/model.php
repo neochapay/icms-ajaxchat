@@ -232,12 +232,20 @@ class cms_model_ajaxchat
   
   public function UpdateOnlineList($user_id)
   {
+    if(!$user_id)
+    {
+      return FALSE;
+    }
+    
     if(!$this->config['use_cron'])
     {
       $this->ClearOnline();
     }
     
-    if($this->CheckUser($user_id))
+    $sql = "SELECT user_id FROM cms_ajaxchat_users WHERE `user_id` = $user_id";
+    $result = $this->inDB->query($sql);
+    
+    if($this->inDB->num_rows($result))
     {
       $sql = "UPDATE cms_ajaxchat_users SET last_action = NOW() , `online` = '1' WHERE user_id = $user_id";
     }
