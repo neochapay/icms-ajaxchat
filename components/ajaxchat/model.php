@@ -321,15 +321,15 @@ class cms_model_ajaxchat
     return TRUE;     
   }
   
-  public function getMessages($skipsystem, $limit, $offset)
+  public function getMessages($skipsystem, $limit, $offset = 0)
   {      
     if(!$limit or $limit > 25)
     {
-      $limit = "0,25";
+      $limit = "$offset,25";
     }
     else
     {
-      $limit = "0,$limit";
+      $limit = "$offset,$limit";
     }
     
     if($skipsystem)

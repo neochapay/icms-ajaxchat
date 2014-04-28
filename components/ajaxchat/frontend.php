@@ -68,6 +68,7 @@ function ajaxchat()
     $pagination = cmsPage::getPagebar($total, $page, 50, '/ajaxchat/history%page%.html', array());
     
     $messages = $model->getMessages(TRUE,50,($page-1)*50);
+    $messages = array_reverse($messages);
     $smarty = $inCore->initSmarty('components', 'com_ajaxchat_history.tpl');
     $smarty->assign('messages', $messages);
     $smarty->assign('is_admin',$inUser->is_admin);
