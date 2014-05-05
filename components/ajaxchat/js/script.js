@@ -10,6 +10,7 @@ var click;
 var active_user;
 var title;
 var notify_count = 0;
+var notification;
 
 $(document).on("click", "a.closedialog", function() {
   listTab("chatrum");
@@ -66,6 +67,10 @@ $(document).ready(function(){
 	    })
 	    on_chat = 1;
 	    newmessages_count = 0;
+	    if(notify_count > 0)
+	    {
+	      notification.close();
+	    }
 	    $('title').text(title);
 	});
 	
@@ -384,7 +389,7 @@ function loadNewMessages()
 		$('title').text("("+newmessages_count+") "+title);
 		if(this.to_id == active_user)
 		{
-		  newMessage(this.message,"ajaxchat_public",this.nickname,this.imageurl)
+		  newNotify(this.message,"ajaxchat_public",this.nickname,this.imageurl)
 		}
 	      }
 	      
@@ -576,7 +581,7 @@ function requestPermissionNotification() {
   }
 }
 
-function newMessage(body,tag,theme,icon) 
+function newNotify(body,tag,theme,icon) 
 {
   if(Notification.permission.toLowerCase() != "granted")
   {
@@ -589,5 +594,6 @@ function newMessage(body,tag,theme,icon)
     icon : (icon) ? icon : ""
   };
   
-  new Notification(theme, params);
+  notification = new Notification(theme, params);
+  notify_count++;
 };
