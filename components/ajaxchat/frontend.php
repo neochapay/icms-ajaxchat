@@ -123,6 +123,7 @@ function ajaxchat()
       $output = array();
       $output['skipsystem'] = $skipsystem;
       $output['messages'] = $model->getMessages($skipsystem,$count);
+      $output['dialogs'] = $model->getDialogs($inUser->id);
       print json_encode($output);
     }
     exit;
@@ -302,16 +303,22 @@ function ajaxchat()
       $companion_id = "-1";
     }
     
-    $companion = $model->getUserByID($companion_id);
+    $companion = $inUser->loadUser($companion_id);
 
     $output = array();
-    $output['user'] = $model->getUserByID($companion_id);
+    $output['user'] = $inUser->loadUser($companion_id);
     $output['messages'] = $model->getDialog($inUser->id,$companion_id);
     print json_encode($output);
-    $model->readDialog($inUser->id,$companion_id);
+    //$model->readDialog($inUser->id,$companion_id);
     exit;
   }
   
+  if($do == "read_pmessage")
+  {
+    $id = $inCore->request('id', 'int');
+    $model->readPMessage($id,$inUser->id);
+  }
+
   if($do == "userstatus")
   {
     $status = $inCore->request('status', 'str');

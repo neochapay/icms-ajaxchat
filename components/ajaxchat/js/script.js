@@ -13,12 +13,12 @@ var notify_count = 0;
 var notification;
 
 $(document).on("click", "a.closedialog", function() {
-  listTab("chatrum");
   $("#chatTopBar UL #"+$(this).attr("id")).remove();
+  listTab("chatrum");
 });
 
-$(document).on("click","#chatTopBar UL LI",function(){
-  listTab($(this).attr("id"));
+$(document).on("click","#chatTopBar UL LI SPAN",function(){
+  listTab($(this).parent().attr("id"));
 })
 
 $(document).on("click","IMG.startdialog",function(){
@@ -46,6 +46,16 @@ $(document).on("click","#chatLineHolder LI TT",function(){
 
 $(document).on("click","#chatLineHolder LI B",function(){
   addLogin($(this).attr("data-login"));
+});
+
+$(document).on("mouseover",".dialogLineHolder UL LI.new",function(){
+  $(this).removeClass("new");
+  var mess_id = $(this).attr("id").replace("mess_","");
+  $.ajax({
+      url:	'/ajaxchat/read_pmessage',
+      type:	'post',
+      data:	'id='+mess_id
+  })
 });
 
 $(document).ready(function(){
@@ -201,13 +211,9 @@ function get_messages()
 	if(str.dialogs)
 	{
 	  $.each(str.dialogs,function(){
-	  if($('#open_'+from_id).text().length == 0)
-	  {
 	    from_id = this.from_id;
 	    loadDialogTab(this);
-	    $("#open_"+from_id).click(function(){listTab("open_"+from_id)});
-	  }
-	})
+	  })
 	}
       }
       var height = $("#chatLineHolder UL").height();
@@ -460,6 +466,14 @@ function addLogin(login)
 
 function listTab(tab)
 {
+  if(tab == "open_-1")
+  {
+    $("#chatBottomBar").hide();
+  }
+  else
+  {
+    $("#chatBottomBar").show();
+  }
   $("#chatTopBar UL LI").removeClass("active");
   $("#chatTopBar UL LI#"+tab).addClass("active");
   if(tab == "chatrum")
@@ -480,6 +494,7 @@ function listTab(tab)
     if($("#"+tab).hasClass("dialog"))
     {
       id = tab.replace("open_","");
+      getPrivateDialog(id);
     }
   }
 }
@@ -526,11 +541,23 @@ function getPrivateDialog(id)
       success: function(json)
       {
 	var dialog = jQuery.parseJSON(json);
-	loadDialogTab(new Object({from_id:dialog.user.id,from_nickname:dialog.user.nickname}));
-	listTab("open_"+dialog.user.id);
 	if(!dialog.messages)
 	{
 	  $(".dialogLineHolder").html('<div class="nomess-private">Ваша переписка пуста<br />Начните общение прямо сейчас</div>');
+	}
+	else
+	{
+	  $(".dialogLineHolder").html('<ul class="pdialog"></ul>');
+	  $.each(dialog.messages,function(){
+	    var dialog_string = "<li ";
+	    if(this.is_new == "1")
+	    {
+	      dialog_string += 'class="new"'
+	    }
+	    dialog_string +=' id="mess_'+this.id+'">'+"<tt>"+this.senddate+"</tt> :"+this.message+"</li>"
+	    $(".dialogLineHolder UL").append(dialog_string);
+	  })
+	  $(".dialogLineHolder").scrollTop("99999999");
 	}
       }
     });
@@ -567,7 +594,7 @@ function sysSound()
 
 
 function loadDialogTab(object){
-  $("#chatTopBar UL").append("<li id=\"open_"+object.from_id+"\" id='open_"+object.from_id+"' class=\"dialog\">"+object.from_nickname+"<a class='closedialog' id='open_"+object.from_id+"'\"></a></div>");
+  $("#chatTopBar UL").append("<li id=\"open_"+object.from_id+"\" id='open_"+object.from_id+"' class=\"dialog\"><span>"+object.from_nickname+"</span><a class='closedialog' id='open_"+object.from_id+"'\"></a></div>");
 }
 
 

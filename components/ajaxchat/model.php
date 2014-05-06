@@ -634,8 +634,9 @@ class cms_model_ajaxchat
     
     $sql = "SELECT * FROM cms_user_msg 
       WHERE 
-      to_id = $user_id AND from_id= $companion_id
-      OR to_id = $companion_id AND from_id = $user_id
+      (to_id = $user_id AND from_id= $companion_id)
+      OR 
+      (to_id = $companion_id AND from_id = $user_id)
       $where
       ORDER BY senddate ASC
       LIMIT $limit";
@@ -667,28 +668,28 @@ class cms_model_ajaxchat
     return $output;
   }
   
-  public function readDialog($to_id,$from_id)
-  {
-    $sql = "UPDATE cms_user_msg SET is_new = 0 WHERE is_new = 1 AND to_id = $to_id AND from_id = $from_id"; 
-    $result = $this->inDB->query($sql);
-    
-    if ($this->inDB->error()) 
-    {
-      return false; 
-    }
-    return true;
-  }
+//   public function readDialog($to_id,$from_id)
+//   {
+//     $sql = "UPDATE cms_user_msg SET is_new = 0 WHERE is_new = 1 AND to_id = $to_id AND from_id = $from_id"; 
+//     $result = $this->inDB->query($sql);
+//     
+//     if ($this->inDB->error()) 
+//     {
+//       return false; 
+//     }
+//     return true;
+//   }
   
   public function getDialogs($user_id)
   {
   //Загружаем активные диалоги - тоесть сообщения личные которые пользователь не прочёл
     $sql = "SELECT cms_user_msg.* ,
-    cms_users.nickname AS from_nickname ,
-    cms_users.login AS from_login
-    FROM cms_user_msg 
-    INNER JOIN cms_users ON cms_users.id = cms_user_msg.from_id
-    WHERE `cms_user_msg`.`to_id` = '$user_id'
-    AND `cms_user_msg`.`is_new` = '1'";
+		   cms_users.nickname AS from_nickname ,
+		   cms_users.login AS from_login
+		   FROM cms_user_msg
+		   LEFT JOIN cms_users ON cms_users.id = cms_user_msg.from_id
+		   WHERE `cms_user_msg`.`to_id` = '$user_id'
+                   AND `cms_user_msg`.`is_new` = '1'";
     
     $result = $this->inDB->query($sql);
     
@@ -704,9 +705,15 @@ class cms_model_ajaxchat
     
     while ($row = $this->inDB->fetch_assoc($result))
     {
+      if($row['from_id'] == "-1" or $row['from_id'] == "")
+      {
+	$row['from_nickname'] = "Служба поддержки";
+	$row['from_id'] == "-1";
+	$row['senddate'] = date("H:i d-m-Y",$row['senddate']);
+      }
       $output[] = $row;
     }
-    return $output;    
+    return $output;
   }
   
   public function clearOld($days)
@@ -730,6 +737,13 @@ class cms_model_ajaxchat
   public function setUserColor($user_id,$color)
   {
     $sql = "UPDATE cms_ajaxchat_users SET `color` = '$color' WHERE `user_id` = $user_id";
+    $result = $this->inDB->query($sql);
+    return TRUE;
+  }
+  
+  public function readPMessage($id,$user_id)
+  {
+    $sql = "UPDATE cms_user_msg SET `is_new` = '0' WHERE `to_id` = $user_id AND `id` = $id";
     $result = $this->inDB->query($sql);
     return TRUE;
   }

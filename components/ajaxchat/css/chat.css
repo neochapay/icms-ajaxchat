@@ -106,6 +106,7 @@ overflow-x: hidden;height: 345px;
 	overflow-x: hidden;
 	display: none;
 	background-color: white;
+	color: black;
 }
 .dialogLineHolder UL{
 	padding-left: 8px;
@@ -119,41 +120,8 @@ overflow-x: hidden;height: 345px;
   overflow: hidden;
 }
 
-.dialogLineHolder UL LI IMG.companion_image{
-  float: left;
-  height:64px;
-  margin: 2px;
-  padding-top: 2px;
-}
-
-.dialogLineHolder UL LI .title{
-  margin-left: 74px;
-  font-weight: bold;
-  font-size: 10px;
-  padding-top: 20px;
-  width: 110px;
-  text-align: center;
-}
-
-.dialogLineHolder UL LI .time{
-  margin-left: 74px;
-  font-size: 10px;
-  padding-top: 2px;
-  width: 110px;
-  text-align: center;
-}
-
-.dialogLineHolder UL LI .message{
-  margin-left: 190px;
-  font-size: 12px;
-  padding-top: 2px;
-  margin-top: -50px;
-  height: 60px;
-  overflow: hidden;
-}
-
-.dialogLineHolder UL LI .author_image{
-  float: left;
+.dialogLineHolder UL LI.new{
+  background-color: #efefef;
 }
 /* Чат */
 #chatLineHolder{

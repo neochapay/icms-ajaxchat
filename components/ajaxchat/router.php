@@ -77,6 +77,11 @@ function routes_ajaxchat()
     '_uri'  => '/^ajaxchat\/set_color$/i',
     'do'    => 'set_color'
   );
+
+  $routes[] = array(
+    '_uri'  => '/^ajaxchat\/read_pmessage$/i',
+    'do'    => 'read_pmessage'
+  );  
   return $routes;
 }
 ?>
