@@ -242,6 +242,8 @@ function ajaxchat()
   if($do == "load_new")
   {
     $last_id = $inCore->request('last_id', 'int');
+    $dialog = $inCore->request('dialog', 'str');
+
     if(!$last_id)
     {
       exit;
@@ -251,6 +253,7 @@ function ajaxchat()
     {
       $output['messages'] = $model->getNewMessages($last_id,$inUser->id,$skipsystem);
       $output['dialogs'] = $model->getDialogs($inUser->id);
+      $output['converstation'] = $model->getDialog($inUser->id,$dialog);
     }
     else
     {

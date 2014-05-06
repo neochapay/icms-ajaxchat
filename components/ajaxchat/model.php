@@ -658,28 +658,15 @@ class cms_model_ajaxchat
       $row['user_id'] = $row['from_id'];
       $row['color'] = "#000000";
       $row['time'] = substr($row['senddate'],10);
-      $row['to_id'] = 0;
-      
+
       $send_user = $this->inUser->loadUser($row["from_id"]);
       $row['nickname'] = $send_user['nickname'];
-      
+
       $output[] = $row;
     }
     return $output;
   }
-  
-//   public function readDialog($to_id,$from_id)
-//   {
-//     $sql = "UPDATE cms_user_msg SET is_new = 0 WHERE is_new = 1 AND to_id = $to_id AND from_id = $from_id"; 
-//     $result = $this->inDB->query($sql);
-//     
-//     if ($this->inDB->error()) 
-//     {
-//       return false; 
-//     }
-//     return true;
-//   }
-  
+
   public function getDialogs($user_id)
   {
   //Загружаем активные диалоги - тоесть сообщения личные которые пользователь не прочёл

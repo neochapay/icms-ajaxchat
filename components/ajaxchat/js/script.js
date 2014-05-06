@@ -26,7 +26,6 @@ $(document).on("click","IMG.startdialog",function(){
   var from_nickname = $(this).closest("li").text();
   
   $("#chatTopBar UL").append("<li id=\"open_"+from_id+"\" id='open_"+from_id+"' class=\"dialog\"><span>"+from_nickname+"</span><a class='closedialog' id='open_"+from_id+"'\"></a></div>");
-  //getPrivateDialog($(this).closest("li").attr("user-id"));
   listTab("open_"+$(this).closest("li").attr("user-id"));
 })
 
@@ -276,12 +275,6 @@ function sendMessage()
 	    {
 	      loadNewMessages();
 	    }
-	    
-	    if(id)
-	    {
-	      var act_nickname = $('#chatuser_'+active_user).text();
-	      $(".dialogLineHolder UL").append("<li class=\"mess_stub\" style=\"color:black\"><tt>00:00:00</tt> <b>"+act_nickname+"</b>:"+message+"</li>");
-	    }
 	  }
 	  else
 	  {
@@ -365,14 +358,21 @@ function loadNewMessages()
 {
   $('#flag').removeClass();
   $('#flag').addClass('yellow');
-  
+
+
+  var dialog = $("#chatTopBar UL LI.dialog.active").attr("id");
+  if(dialog)
+  {
+    dialog = dialog.replace("open_","");
+  }
+
   if(upd == 0)
   {
     upd = 1;
     $.ajax({
       url:	"/ajaxchat/load_new",
       type:	"post",
-      data:	"last_id="+last_id+"&skipsystem="+skipsystem,
+      data:	"last_id="+last_id+"&skipsystem="+skipsystem+"&dialog="+dialog,
       success: function(json)
       {
 	if(json.length < 10)
@@ -453,9 +453,15 @@ function loadNewMessages()
 	    }
 	    else if($('#open_'+from_id).hasClass('active'))
 	    {
-// 	      loadDialog(from_id);
+		getPrivateDialog(from_id);
 	    }
 	  })
+	}
+// 	Обновление активного диалога 
+	var active_id = $('#chatTopBar LI.dialog.active').attr("id");
+	if(active_id)
+	{
+	  getPrivateDialog(active_id.replace("open_",""));
 	}
       }
     });
@@ -559,7 +565,7 @@ function getPrivateDialog(id)
 	    {
 	      dialog_string += 'class="new"'
 	    }
-	    dialog_string +=' id="mess_'+this.id+'">'+"<tt>"+this.senddate+"</tt> :"+this.message+"</li>"
+	    dialog_string +=' id="mess_'+this.id+'">'+"<tt>"+this.senddate+"</tt> : "+this.message+"</li>"
 	    $(".dialogLineHolder UL").append(dialog_string);
 	  })
 	  $(".dialogLineHolder").scrollTop("99999999");
