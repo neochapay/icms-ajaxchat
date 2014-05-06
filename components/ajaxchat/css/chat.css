@@ -123,6 +123,10 @@ overflow-x: hidden;height: 345px;
 .dialogLineHolder UL LI.new{
   background-color: #efefef;
 }
+
+.chatTopBar .dialog.have_new{
+  font-weight: bold;
+}
 /* Чат */
 #chatLineHolder{
 	height:360px;

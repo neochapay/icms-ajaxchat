@@ -446,15 +446,11 @@ function loadNewMessages()
 	  $.each(str.dialogs,function(){
 	    from_id = this.from_id;
 
-	    if($('#open_'+from_id).text().length == 0)
+	    if($('#open_'+this.from_id).text().length == 0)
 	    {
 	      loadDialogTab(this);
-	      $("#open_"+from_id).click(function(){listTab("open_"+from_id)});
 	    }
-	    else if($('#open_'+from_id).hasClass('active'))
-	    {
-		getPrivateDialog(from_id);
-	    }
+	    $('#open_'+this.from_id).addClass('have_new');
 	  })
 	}
 // 	Обновление активного диалога 
@@ -485,8 +481,10 @@ function listTab(tab)
   {
     $("#chatBottomBar").show();
   }
+  
   $("#chatTopBar UL LI").removeClass("active");
   $("#chatTopBar UL LI#"+tab).addClass("active");
+  $("#chatTopBar UL LI#"+tab).removeClass("have_new");
   if(tab == "chatrum")
   {
     $(".dialogLineHolder").hide();
