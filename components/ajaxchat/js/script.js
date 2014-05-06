@@ -22,7 +22,12 @@ $(document).on("click","#chatTopBar UL LI SPAN",function(){
 })
 
 $(document).on("click","IMG.startdialog",function(){
-  getPrivateDialog($(this).closest("li").attr("user-id"));
+  var from_id = $(this).closest("li").attr("user-id");
+  var from_nickname = $(this).closest("li").text();
+  
+  $("#chatTopBar UL").append("<li id=\"open_"+from_id+"\" id='open_"+from_id+"' class=\"dialog\"><span>"+from_nickname+"</span><a class='closedialog' id='open_"+from_id+"'\"></a></div>");
+  //getPrivateDialog($(this).closest("li").attr("user-id"));
+  listTab("open_"+$(this).closest("li").attr("user-id"));
 })
 
 $(document).on("click","IMG.sendpublic",function(){
@@ -550,7 +555,7 @@ function getPrivateDialog(id)
 	  $(".dialogLineHolder").html('<ul class="pdialog"></ul>');
 	  $.each(dialog.messages,function(){
 	    var dialog_string = "<li ";
-	    if(this.is_new == "1")
+	    if(this.is_new == "1" && this.from_id != active_user)
 	    {
 	      dialog_string += 'class="new"'
 	    }
