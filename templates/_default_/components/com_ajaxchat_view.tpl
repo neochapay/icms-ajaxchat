@@ -19,8 +19,6 @@
         <div id="submitForm" style=" margin-right: 10px;">
 	    <div class="usr_msg_bbcodebox">{$bb_toolbar}</div>
 	    <div class="scolor">
-	      <img src="/components/ajaxchat/img/color.png">
-	      <img src="/components/ajaxchat/img/color-right.png">
 	      <select name="colorpicker">
 		{foreach  key=id item=color from=$colors}
 		  <option value="{$color}" {if $color == $user_color}selected{/if}>{$color}</option>
