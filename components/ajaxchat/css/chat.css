@@ -127,6 +127,20 @@ overflow-x: hidden;height: 345px;
 .chatTopBar .dialog.have_new{
   font-weight: bold;
 }
+
+UL.pdialog{
+  margin-right: 25px;
+}
+
+UL.pdialog LI{
+  width: 100%;
+  display: inline-block;
+  border-bottom: 1px solid #E6E6E6;
+}
+
+UL.pdialog LI.from_you{
+  text-align: right;
+}
 /* Чат */
 #chatLineHolder{
 	height:360px;
@@ -466,10 +480,6 @@ IMG.activestatus{
 
 .iconsright IMG{
   cursor: pointer;
-}
-
-.startdialog{
-  display: none;
 }
 
 #chatTopBar .dialog .closedialog{

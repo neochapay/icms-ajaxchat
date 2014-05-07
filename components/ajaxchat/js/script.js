@@ -13,7 +13,7 @@ var notify_count = 0;
 var notification;
 
 $(document).on("click", "a.closedialog", function() {
-  $(".dialogLineHolder UL LI.new").each(function(){
+  $(".dialogLineHolder UL LI.new.from_him").each(function(){
     $(this).removeClass("new");
     var mess_id = $(this).attr("id").replace("mess_","");
     $.ajax({
@@ -62,7 +62,7 @@ $(document).on("click","#chatLineHolder LI B",function(){
   addLogin($(this).attr("data-login"));
 });
 
-$(document).on("mouseover",".dialogLineHolder UL LI.new",function(){
+$(document).on("mouseover",".dialogLineHolder UL LI.new.from_him",function(){
   $(this).removeClass("new");
   var mess_id = $(this).attr("id").replace("mess_","");
   $.ajax({
@@ -571,12 +571,22 @@ function getPrivateDialog(id)
 	{
 	  $(".dialogLineHolder").html('<ul class="pdialog"></ul>');
 	  $.each(dialog.messages,function(){
-	    var dialog_string = "<li ";
-	    if(this.is_new == "1" && this.from_id != active_user)
+	    var dialog_string = '<li class="';
+	    if(this.is_new == "1")
 	    {
-	      dialog_string += 'class="new"'
+	      dialog_string += 'new '
 	    }
-	    dialog_string +=' id="mess_'+this.id+'">'+"<tt>"+this.senddate+"</tt> : "+this.message+"</li>"
+
+	    if(this.from_id == active_user)
+	    {
+	      dialog_string += 'from_you ';
+	    }
+	    else
+	    {
+	      dialog_string += 'from_him';
+	    }
+
+	    dialog_string +='" id="mess_'+this.id+'">'+this.message+"</li>"
 	    $(".dialogLineHolder UL").append(dialog_string);
 	  })
 	  $(".dialogLineHolder").scrollTop("99999999");
