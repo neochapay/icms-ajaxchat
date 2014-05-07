@@ -13,6 +13,16 @@ var notify_count = 0;
 var notification;
 
 $(document).on("click", "a.closedialog", function() {
+  $(".dialogLineHolder UL LI.new").each(function(){
+    $(this).removeClass("new");
+    var mess_id = $(this).attr("id").replace("mess_","");
+    $.ajax({
+      url:	'/ajaxchat/read_pmessage',
+      type:	'post',
+      data:	'id='+mess_id
+    })
+  })
+
   $("#chatTopBar UL #"+$(this).attr("id")).remove();
   listTab("chatrum");
 });
@@ -167,7 +177,7 @@ function get_userlist()
 	    }
 	    if(this.user_id != active_user)
 	    {
-	      userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a><div class="iconsright"><img class="startdialog" src="/components/ajaxchat/img/start-dialog.png"><img class="sendpublic" title="Отправить публичное сообщение" src="/components/ajaxchat/img/send_public.png"></div></li>';
+	      userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a><div class="iconsright"><img class="startdialog" src="/components/ajaxchat/img/start-dialog.png" title="Отправить личное сообщение"><img class="sendpublic" title="Отправить публичное сообщение" src="/components/ajaxchat/img/send_public.png"></div></li>';
 	    }
 	    else
 	    {
@@ -467,8 +477,11 @@ function loadNewMessages()
 
 function addLogin(login)
 {
-  $("#chatText").val("/to "+login+" ");
-  $("#chatText").focus();
+  if($("LI.chatuser#chatuser_"+active_user).attr("login-id") != login)
+  {
+    $("#chatText").val("/to "+login+" ");
+    $("#chatText").focus();
+  }
 }
 
 function listTab(tab)
