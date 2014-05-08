@@ -205,12 +205,11 @@ function ajaxchat()
 	  $message = $inCore->request('message', 'html', '');
 	}
       
-      
+	$message = $inCore->parseSmiles($message, true);
 	if(strlen($message) >= 2)
 	{
 	  if(!$model->isBanned($inUser->id) or $inUser->is_admin)
 	  {
-	    $message = $inCore->parseSmiles($message, true);
 	    $model->addMessage($inUser->id,$to_id,$message);
 	    print "pass";
 	  }
