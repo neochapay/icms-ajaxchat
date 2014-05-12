@@ -7,6 +7,7 @@ class cms_model_ajaxchat
   {
     $this->inDB = cmsDatabase::getInstance();
     $this->inUser = cmsUser::getInstance();
+    $this->inCore = cmsCore::getInstance();
     $this->config = cmsCore::getInstance()->loadComponentConfig('ajaxchat');
   }
   
@@ -638,7 +639,7 @@ class cms_model_ajaxchat
       OR 
       (to_id = $companion_id AND from_id = $user_id)
       $where
-      ORDER BY senddate ASC
+      ORDER BY senddate DESC
       LIMIT $limit";
       
     $result = $this->inDB->query($sql);
@@ -658,12 +659,13 @@ class cms_model_ajaxchat
       $row['user_id'] = $row['from_id'];
       $row['color'] = "#000000";
       $row['time'] = substr($row['senddate'],10);
-
+      $row['message'] = $this->inCore->parseSmiles($row['message']);
       $send_user = $this->inUser->loadUser($row["from_id"]);
       $row['nickname'] = $send_user['nickname'];
 
       $output[] = $row;
     }
+    $output = array_reverse($output);
     return $output;
   }
 

@@ -228,6 +228,7 @@ function ajaxchat()
 	$companion_id = str_replace("open_","",$id);
 	if($companion_id and is_numeric($companion_id))
 	{
+	  $message = $inCore->parseSmiles($message, true);
 	  $inUser->sendMessage($inUser->id,$companion_id,$message);
 	  echo "pass";
 	}
