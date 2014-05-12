@@ -676,7 +676,8 @@ class cms_model_ajaxchat
 		   FROM cms_user_msg
 		   LEFT JOIN cms_users ON cms_users.id = cms_user_msg.from_id
 		   WHERE `cms_user_msg`.`to_id` = '$user_id'
-                   AND `cms_user_msg`.`is_new` = '1'";
+                   AND `cms_user_msg`.`is_new` = '1'
+                   GROUP BY `cms_user_msg`.`from_id`";
     
     $result = $this->inDB->query($sql);
     
