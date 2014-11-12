@@ -163,7 +163,16 @@
       $.ajax({
 	url:	'/ajaxchat/set_color',
 	type:	'post',
-	data:	'color='+color
+	data:	'color='+color,
+	success:	function(login)
+	{
+	  $("#chatLineHolder UL li b[data-login="+login+"]").each(function(){ 
+	    if($(this).parent().find("b").first().attr("data-login") == login)
+	    {
+	      $(this).parent().css("color",color);
+	    }
+	  })
+	}
       });
     },
 

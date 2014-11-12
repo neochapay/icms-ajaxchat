@@ -1,9 +1,9 @@
 <link rel="stylesheet" type="text/css" href="/components/ajaxchat/css/page.css" />
 <link rel="stylesheet" type="text/css" href="/components/ajaxchat/css/chat.css" />
 
-<div id="chatContainer">
+<div id="chatContainer" class="colWrap">
 
-    <div id="chatTopBar" class="rounded">
+    <div id="chatTopBar" class="rounded col20">
       <ul>
 	<li id="chatrum">Чат</li>
       </ul>
@@ -13,11 +13,10 @@
     <div id="chatLineHolder"></div>
     <div class="dialogLineHolder"></div>
     
-    <div id="chatUsers" class="rounded"></div>
+    <div id="chatUsers" class="rounded"><ul></ul></div>
     <div id="chatBottomBar" class="rounded">
     	<div class="tip"></div>
         <div id="submitForm" style=" margin-right: 10px;">
-	    <div class="usr_msg_bbcodebox">{$bb_toolbar}</div>
 	    <div class="scolor">
 	      <select name="colorpicker">
 		{foreach  key=id item=color from=$colors}
@@ -25,12 +24,24 @@
 		{/foreach}
 	      </select>
 	    </div>
-	    {$smilies}
+	    <div id="smilecelect">
+	      <div id="smilelist">
+		{foreach  key=id item=dir from=$smiles}
+		  <hr />
+		  {foreach  key=id item=img from=$dir}
+		    <img src="{$img.file}" class="emo_s" data-name="{$img.name}">
+		  {/foreach}
+		{/foreach}
+	      </div>
+	      <div id="smilebutton">
+		<img src="/components/ajaxchat/img/smiles/smiles/1f603.png">
+	      </div>
+	    </div>
 	    {$autogrow}
-            <input id="chatText" name="chatText" class="rounded" style="width: 100%; margin-bottom: 10px;" />
+            <div id="chatText" name="chatText" class="rounded" contenteditable></div>
             <input type="submit" class="blueButton" value="Отправить" onClick="sendMessage()"/>
             <div class="sysmesc">
-	      <div class="icon" id="sysvoice" onClick="sysMes()" title="Системные сообщения"></div>
+	      <div class="icon on" id="sysvoice" onClick="sysMes()" title="Системные сообщения"></div>
 	      <div class="icon" id="sound" onClick="sysSound()" title="Звуки в чате"></div>
 	      <div class="icon" id="help" onClick="console.log('Помощи ждать неоткуда,а люди настроены враждебно...')" title="Помощь"></div>
 	    </div>

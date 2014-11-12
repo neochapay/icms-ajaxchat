@@ -7,8 +7,10 @@ function ajaxchat()
   $inUser = cmsUser::getInstance();
   $inDB = cmsDatabase::getInstance();
   $inCore->loadModel('ajaxchat');
+  $inCore->loadModel('users');
 
   $model = new cms_model_ajaxchat();
+  $usersModel = new cms_model_users();
 
   $do = $inCore->request('do', 'str', 'view');
 
@@ -25,17 +27,12 @@ function ajaxchat()
 	{
 	  $model->addMessage(0,0,"К чату присоединяется ".$inUser->nickname);
 	}
-	
-	$bb_toolbar = cmsPage::getBBCodeToolbar('chatText', TRUE, 'forum', 'post');
-        $smilies    = cmsPage::getSmilesPanel('chatText');
-	
 	$model->updateActive($inUser->id,1);
-	
+
 	$model->UpdateOnlineList($inUser->id);
-	$smarty = $inCore->initSmarty('components', 'com_ajaxchat_view.tpl');
-	$smarty->assign('bb_toolbar', $bb_toolbar);
-	$smarty->assign('smilies', $smilies);
+	$smarty = cmsPage::initTemplate('components', 'com_ajaxchat_view.tpl');
 	$smarty->assign('colors', $model->allColors());
+	$smarty->assign('smiles', $model->getSmiles());
 	$smarty->assign('user_color', $model->getUserColor($inUser->id));
 	$smarty->display('com_ajaxchat_view.tpl');
       }
@@ -69,7 +66,7 @@ function ajaxchat()
     
     $messages = $model->getMessages(TRUE,50,($page-1)*50);
     $messages = array_reverse($messages);
-    $smarty = $inCore->initSmarty('components', 'com_ajaxchat_history.tpl');
+    $smarty = cmsPage::initTemplate('components', 'com_ajaxchat_history.tpl');
     $smarty->assign('messages', $messages);
     $smarty->assign('is_admin',$inUser->is_admin);
     $smarty->assign('pagination',$pagination);
@@ -92,19 +89,15 @@ function ajaxchat()
   
   if($do == "get_userlist")
   {
-    if($inUser->id)
-    {
-      if(!$model->isBanned($inUser->id) or $inUser->is_admin)
-      {
-	$model->UpdateOnlineList($inUser->id);
-	$online = $model->getOnline();
-	print json_encode($online);
-      }
-      else
-      {
-	echo "ACCESS ERROR";
-      }
-    }
+    $model->UpdateOnlineList($inUser->id);
+    $online = $model->getOnline();
+    print json_encode($online);
+    exit;
+  }
+  
+  if($do == "me")
+  {
+    print json_encode($inUser);
     exit;
   }
   
@@ -134,78 +127,26 @@ function ajaxchat()
     if($inUser->id)
     {
       $message = $inCore->request('message', 'html','');
+      
+      $message = urldecode($message);
+      $message = str_replace('contenteditable="false"',"",$message);
+      $message = preg_replace("/(style=\".+?\"|onclick=\".+?\")/","",$message);
+      $message = str_replace("  "," ",$message);
+      $message = str_replace(" >",">",$message);
+      preg_match_all("#<b data-login=\"(.*)\">(.*)</b>#Uis", $message, $string);
+      $i = 0;
+
+      foreach($string[0] as $rstring)
+      {
+	$message = str_replace($rstring,"@".$string[1][$i],$message);
+	$i++;
+      }
+      $message = str_replace("&nbsp;"," ",$message);
+      $message = mb_substr($message, 1, -1);
+
       $id = $inCore->request('id', 'str');
       if($id == "chatrum")
       {
-	if(preg_match_all('((?:\\/[\\w\\.\\-]+)+)',$message, $matches))
-	{
-	  $command = $matches[0][0];
-	  $command_raw = explode(" ",$message);
-	  $target = $command_raw[1];
-
-	  if($command == "/to")
-	  {
-	    str_replace(":","",$target);
-	    $user = $model->getUser(trim($target));
-	    if($user and $user['id'] != $inUser->id)
-	    {
-	      $to_id = $user['id'];
-	    }
-	    else
-	    {
-	      $to_id = 0;
-	    }
-	  }
-	  elseif($command == "/bann")
-	  {
-	    if($inUser->is_admin)
-	    {
-	      $user = $model->getUser($target);
-	      if($user and $user['id'] != $inUser->id)
-	      {
-		$model->addToBan($user['id']);
-		$model->addMessage(0,0,"Администратор забанил ".$user['nickname']);
-	      }
-	    }
-	    unset($message);
-	    print "user is banned.";
-	    exit;
-	  }
-	  elseif($command == "/unbann")
-	  {
-	    if($inUser->is_admin)
-	    {
-	      $user = $model->getUser($target);
-	      if($user and $user['id'] != $inUser->id)
-	      {
-		$model->removeFromBan($user['id']);
-		$model->addMessage(0,0,"Администратор разбанил ".$user['nickname']);
-	      }
-	    }
-	    unset($message);
-	    print "pass";
-	    exit;	  
-	  }
-	  elseif($command == "/me")
-	  {
-	    $string = trim(str_replace($command,"",$message));
-	    $model->addMessage(0,0,$inUser->nickname." ".$string);
-	    unset($message);
-	    print "pass";
-	    exit;
-	  }
-	  elseif($command == "/color")
-	  {
-	    $model->changeColor($inUser->id);
-	    unset($message);
-	  }
-	}
-	else
-	{
-	  $message = $inCore->request('message', 'html', '');
-	}
-      
-	$message = $inCore->parseSmiles($message, true);
 	if(strlen($message) >= 2)
 	{
 	  if(!$model->isBanned($inUser->id) or $inUser->is_admin)
@@ -338,12 +279,6 @@ function ajaxchat()
     exit;
   }
   
-  if($do == "get_help")
-  {
-    print str_replace("\n","<br />",$cfg['help']);
-    exit;
-  }
-  
   if($do == "set_color")
   {
     if(!$inUser->id)
@@ -356,6 +291,14 @@ function ajaxchat()
     {
       $model->setUserColor($inUser->id,$color);
     }
+    print $inUser->login;
+  }
+  
+  if($do == "get_color")
+  {
+    $login = $inCore->request('login', 'str');
+    $user = $usersModel->getUser($login);
+    print $model->getUserColor($user['id']);
   }
   
   if($do == "clear")

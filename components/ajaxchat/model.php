@@ -103,6 +103,34 @@ class cms_model_ajaxchat
     return $colors;
   }
   
+  public function getSmiles()
+  {
+    $root = $_SERVER['DOCUMENT_ROOT']."/components/ajaxchat/img/smiles/";
+    $smiles_dir[] = "smiles";
+    $smiles_dir[] = "faces";
+    $smiles_dir[] = "zoo";
+    $smiles_dir[] = "sport";
+    $smiles_dir[] = "flags";
+    $smiles_dir[] = "letters";
+    $smiles_dir[] = "other";
+    
+    foreach($smiles_dir as $dir)
+    {
+      $f = scandir($root.$dir."/");
+      foreach ($f as $file)
+      {
+	if(preg_match('/\.(png)/', $file))
+	{
+	  $out['file'] = "/components/ajaxchat/img/smiles/".$dir."/".$file;
+	  $out['name'] = str_replace(".png","",$file);
+	  $output[$dir][] = $out;
+	}
+      }
+    }
+    
+    return $output;
+  }
+  
   public function getColor()
   {
     //Определяем цвета сообщений чата
@@ -269,9 +297,11 @@ class cms_model_ajaxchat
   
   public function getOnline()
   {
+    $this->clearOnline();
     $sql = "SELECT cms_ajaxchat_users.last_action,
     cms_ajaxchat_users.user_id,
     cms_ajaxchat_users.on_chat,
+    cms_ajaxchat_users.color,
     cms_users.login,
     cms_users.nickname,
     cms_user_profiles.imageurl
@@ -372,6 +402,23 @@ class cms_model_ajaxchat
       $row['nickname'] = $user[$row['user_id']]['nickname'];
       $row['imageurl'] = $user[$row['user_id']]['imageurl'];      
 
+      preg_match_all("#\@(.*) #Uis", $row['message'], $string);
+
+      if(count($string[1]))
+      {
+	foreach($string[1] as $user_nick)
+	{
+	  $user = $this->getUser($user_nick);
+	  $row['message'] = str_replace("@".$user_nick,'<b data-login="'.$user_nick.'">'.$user['nickname'].'</b>',$row['message']);
+	  if($user_nick == $this->inUser->login)
+	  {
+	    $row["hl"] = true;
+	  }
+	}
+      }
+      
+      
+      //FIXME удалить после ...
       if($row['to_id'])
       {
 	$to = $this->inUser->loadUser($row['to_id']);
@@ -381,11 +428,11 @@ class cms_model_ajaxchat
       }
       $row['message'] = str_replace('src="/','src="http://'.$_SERVER['HTTP_HOST']."/", $row['message']);
       $row['message_color'] = $row['color'];
-      if(!$row['imageurl'] or !file($_SERVER['DOCUMENT_ROOT']."/images/users/avatars/small/".$row['imageurl']))
+      if(!$row['imageurl'] or !file($_SERVER['DOCUMENT_ROOT'].$row['imageurl']))
       {
-	$row['imageurl'] = "nopic.jpg";
+	$row['imageurl'] = "/images/users/avatars/small/nopic.jpg";
       }
-      $row['imageurl'] = "http://".$_SERVER['HTTP_HOST']."/images/users/avatars/small/".$row['imageurl'];
+      $row['imageurl'] = "http://".$_SERVER['HTTP_HOST'].$row['imageurl'];
       $output[] = $row;
     }
     return array_reverse($output);     
@@ -438,6 +485,21 @@ class cms_model_ajaxchat
       $row['imageurl'] = $user[$row['user_id']]['imageurl'];  
       $row['color'] = $this->getUserColor($row['user_id']);
       
+      preg_match_all("#\@(.*) #Uis", $row['message'], $string);
+      
+      if(count($string[1]))
+      {
+	foreach($string[1] as $user_nick)
+	{
+	  $user = $this->getUser($user_nick);
+	  $row['message'] = str_replace("@".$user_nick,'<b data-login="'.$user_nick.'">'.$user['nickname'].'</b>',$row['message']);
+	  if($user_nick == $this->inUser->login)
+	  {
+	    $row["hl"] = true;
+	  }
+	}
+      }
+      
       if($row['to_id'] == $this->inUser->id)
       {
 	$row["hl"] = true;
@@ -454,11 +516,11 @@ class cms_model_ajaxchat
 	$row['message'] = str_replace("/to ".$to['login'],"", $row['message']);
       }
       $row['message'] = str_replace('src="/','src="http://'.$_SERVER['HTTP_HOST']."/", $row['message']);
-      if(!$row['imageurl'] or !file($_SERVER['DOCUMENT_ROOT']."/images/users/avatars/small/".$row['imageurl']))
+      if(!$row['imageurl'] or !file($_SERVER['DOCUMENT_ROOT'].$row['imageurl']))
       {
-	$row['imageurl'] = "nopic.jpg";
+	$row['imageurl'] = "/images/users/avatars/small/nopic.jpg";
       }      
-      $row['imageurl'] = "http://".$_SERVER['HTTP_HOST']."/images/users/avatars/small/".$row['imageurl'];
+      $row['imageurl'] = "http://".$_SERVER['HTTP_HOST'].$row['imageurl'];
       $output[] = $row;
     }
     return $output;     

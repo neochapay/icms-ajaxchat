@@ -5,7 +5,7 @@
         $_component['link']         = 'ajaxchat';
         $_component['author']       = 'Сергей Игоревич (NeoChapay)';
         $_component['internal']     = '0';
-        $_component['version']      = '0.4';
+        $_component['version']      = '0.5';
         return $_component;
     }
 
@@ -42,7 +42,7 @@
     function upgrade_component_ajaxchat()
     {
       $inDB = cmsDatabase::getInstance();
-      $sql = "TRUNCATE TABLE `cms_ajaxchat_users`";
+      $sql = "ALTER TABLE `cms_ajaxchat_users` ADD `config` TEXT NOT NULL;";
       $inDB->query($sql);
       return true;
     }

@@ -44,8 +44,8 @@ function routes_ajaxchat()
   );   
   
   $routes[] = array(
-    '_uri'  => '/^ajaxchat\/get_help$/i',
-    'do'    => 'get_help'
+    '_uri'  => '/^ajaxchat\/get_color$/i',
+    'do'    => 'get_color'
   );     
 
   $routes[] = array(
@@ -53,6 +53,11 @@ function routes_ajaxchat()
     'do'    => 'get_dialogs'
   );   
 
+  $routes[] = array(
+    '_uri'  => '/^ajaxchat\/me$/i',
+    'do'    => 'me'
+  );   
+  
   $routes[] = array(
     '_uri'  => '/^ajaxchat\/userstatus$/i',
     'do'    => 'userstatus'
@@ -81,7 +86,8 @@ function routes_ajaxchat()
   $routes[] = array(
     '_uri'  => '/^ajaxchat\/read_pmessage$/i',
     'do'    => 'read_pmessage'
-  );  
+  ); 
+  
   return $routes;
 }
 ?>
