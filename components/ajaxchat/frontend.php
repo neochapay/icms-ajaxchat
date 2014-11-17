@@ -97,7 +97,10 @@ function ajaxchat()
   
   if($do == "me")
   {
-    print json_encode($inUser);
+    $output['id'] = $inUser->id;
+    $output['login'] = $inUser->login;
+    $output['nickname'] = $inUser->nickname;
+    print json_encode($output);
     exit;
   }
   
@@ -129,21 +132,18 @@ function ajaxchat()
       $message = $inCore->request('message', 'html','');
       
       $message = urldecode($message);
-      $message = str_replace('contenteditable="false"',"",$message);
-      $message = preg_replace("/(style=\".+?\"|onclick=\".+?\")/","",$message);
-      $message = str_replace("  "," ",$message);
-      $message = str_replace(" >",">",$message);
-      preg_match_all("#<b data-login=\"(.*)\">(.*)</b>#Uis", $message, $string);
+      preg_match_all("#<b(.*)</b>#Uis", $message, $string);
       $i = 0;
 
       foreach($string[0] as $rstring)
       {
-	$message = str_replace($rstring,"@".$string[1][$i],$message);
+	preg_match_all("#login=\"(.*)\"#Uis", $rstring, $ostring);
+	$message = str_replace($string[0][$i],"@".$ostring[1][0]." ",$message);
 	$i++;
       }
       $message = str_replace("&nbsp;"," ",$message);
       $message = mb_substr($message, 1, -1);
-
+      
       $id = $inCore->request('id', 'str');
       if($id == "chatrum")
       {
@@ -169,7 +169,6 @@ function ajaxchat()
 	$companion_id = str_replace("open_","",$id);
 	if($companion_id and is_numeric($companion_id))
 	{
-	  $message = $inCore->parseSmiles($message, true);
 	  $inUser->sendMessage($inUser->id,$companion_id,$message);
 	  echo "pass";
 	}

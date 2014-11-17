@@ -31,6 +31,10 @@ $(document).on("click","#chatTopBar UL LI SPAN",function(){
   listTab($(this).parent().attr("id"));
 })
 
+$("#chatText").focus(function(){
+  $(this).find("BR").remove();
+})
+
 $(document).on("click","IMG.startdialog",function(){
   var from_id = $(this).closest("li").attr("user-id");
   var from_nickname = $(this).closest("li").text();
@@ -40,7 +44,7 @@ $(document).on("click","IMG.startdialog",function(){
 })
 
 $(document).on("click","IMG.sendpublic",function(){
-  //FIXME НАДО ПЕРЕДЕЛАТЬ ВЫЗОВ
+
   var login = $(this).closest("li").attr("login-id");
   var color = $(this).closest("li").attr("user-color");
   var nickname = $(this).closest("li").find("A").text();
@@ -51,23 +55,8 @@ $(document).on("click","IMG.sendpublic",function(){
     {
       $("#chatText").append(apd);
     }
-  }    
+  }
 })
-
-$(document).on("click","#chatLineHolder LI TT",function(){
-  var id = $(this).parent().attr("id");
-  if($("#"+id).hasClass("fixed"))
-  {
-    $("#"+id).removeClass("fixed");
-  }
-  else
-  {
-    var fcount = $(".fixed").size();
-    var top = 50+20*fcount;
-    $("#"+id).addClass("fixed");
-    $("#"+id).css("top",top+"px");
-  }
-});
 
 $(document).on("click","#chatLineHolder LI B",function(){
   if($("LI.chatuser#chatuser_"+active_user).attr("login-id") != $(this).attr("data-login"))
@@ -90,12 +79,24 @@ $(document).on("click","#chatLineHolder LI B",function(){
   }
 });
 
+$(document).on("click","#chatLineHolder LI TT",function(){
+  var id = $(this).parent().attr("id");
+  if($("#"+id).hasClass("fixed"))
+  {
+    $("#"+id).removeClass("fixed");
+  }
+  else
+  {
+    var fcount = $(".fixed").size();
+    var top = 50+20*fcount;
+    $("#"+id).addClass("fixed");
+    $("#"+id).css("top",top+"px");
+  }
+});
 
 $(document).on("click","#chatText B",function(){
     $(this).remove();
 });
-
-
 
 $(document).on("mouseover",".dialogLineHolder UL LI.new.from_him",function(){
   $(this).removeClass("new");
