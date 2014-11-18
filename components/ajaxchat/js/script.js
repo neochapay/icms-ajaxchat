@@ -145,7 +145,7 @@ $(document).ready(function(){
 	setInterval(loadNewMessages, 5000);
 	setInterval(onLineUsers, 15000);
 
-	$f("player", "http://releases.flowplayer.org/swf/flowplayer-3.2.14.swf",{
+	$f("player", "/components/ajaxchat/js/fp/flowplayer-3.2.14.swf",{
 	  clip:{
 	    autoPlay: false,
 	  },
