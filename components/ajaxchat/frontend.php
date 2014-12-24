@@ -183,10 +183,16 @@ function ajaxchat()
   {
     $last_id = $inCore->request('last_id', 'int');
     $dialog = $inCore->request('dialog', 'str');
-
+    
+    if($inUser->id)
+    {
+      $model->updateActive($inUser->id,1);
+    }
+    
     if(!$last_id)
     {
-      exit;
+      $output['error'] = 1;
+      $output['error_message'] = "Неверные данные";
     }
     $skipsystem = $inCore->request('skipsystem', 'int');
     if(!$model->isBanned($inUser->id) or $inUser->is_admin)

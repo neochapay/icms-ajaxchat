@@ -5,7 +5,7 @@
         $_component['link']         = 'ajaxchat';
         $_component['author']       = 'Сергей Игоревич (NeoChapay)';
         $_component['internal']     = '0';
-        $_component['version']      = '0.5';
+        $_component['version']      = '0.5.2';
         return $_component;
     }
 
@@ -33,7 +33,8 @@
 	      `last_action` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	      `color` text NOT NULL,
 	      `online` tinyint(4) NOT NULL,
-	      `on_chat` int(11) NOT NULL
+	      `on_chat` int(11) NOT NULL,
+	      `config` text NOT NULL
 	      ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
       $inDB->query($sql);
       return true;

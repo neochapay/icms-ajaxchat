@@ -248,7 +248,7 @@ class cms_model_ajaxchat
   
   public function updateActive($user_id,$on_chat)
   {
-    $sql = "UPDATE cms_ajaxchat_users SET `on_chat` = '$on_chat' WHERE `user_id` = '$user_id'";
+    $sql = "UPDATE cms_ajaxchat_users SET `on_chat` = '$on_chat', `config` = '$jconfig' WHERE `user_id` = '$user_id'";
     $result = $this->inDB->query($sql);
       
     if($this->inDB->error())
@@ -258,12 +258,32 @@ class cms_model_ajaxchat
     return TRUE;    
   }  
   
+  public function getUserConfig($user_id)
+  {
+    $sql = "SELECT config FROM cms_ajaxchat_users WHERE user_id = $user_id";
+    $result = $this->inDB->query($sql);
+    $config = $this->inDB->fetch_assoc($result);
+    return json_decode($config);
+  }
+  
   public function UpdateOnlineList($user_id)
   {
     if(!$user_id)
     {
       return FALSE;
     }
+    
+    $config = $this->getUserConfig($user_id);
+    if($_SERVER['HTTP_USER_AGENT'] == "Chat Application")
+    {
+      $config['mobile'] = true;
+    }
+    else
+    {
+      $config['mobile'] = false;
+    }
+    
+    $jconfig = json_encode($config);    
     
     if(!$this->config['use_cron'])
     {
@@ -275,11 +295,11 @@ class cms_model_ajaxchat
     
     if($this->inDB->num_rows($result))
     {
-      $sql = "UPDATE cms_ajaxchat_users SET last_action = NOW() , `online` = '1' WHERE user_id = $user_id";
+      $sql = "UPDATE cms_ajaxchat_users SET last_action = NOW() , `online` = '1', `config` = '$jconfig' WHERE user_id = $user_id";
     }
     else
     {
-      $sql = "INSERT INTO `cms_ajaxchat_users` (`user_id`, `last_action`, `color`, `online`) VALUES ('$user_id', NOW(), '".$this->getColor()."', '1')";
+      $sql = "INSERT INTO `cms_ajaxchat_users` (`user_id`, `last_action`, `color`, `online`, `config`) VALUES ('$user_id', NOW(), '".$this->getColor()."', '1', '$jconfig')";
     }
     
     $result = $this->inDB->query($sql);
@@ -302,6 +322,7 @@ class cms_model_ajaxchat
     cms_ajaxchat_users.user_id,
     cms_ajaxchat_users.on_chat,
     cms_ajaxchat_users.color,
+    cms_ajaxchat_users.config as userconfig,
     cms_users.login,
     cms_users.nickname,
     cms_user_profiles.imageurl
@@ -334,6 +355,7 @@ class cms_model_ajaxchat
       {
 	$row['active'] = FALSE;
       }
+      $row['config'] = json_decode($row['userconfig']);
       $output[] = $row;
     }
     return $output;     

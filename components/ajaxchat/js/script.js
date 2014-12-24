@@ -322,13 +322,20 @@ function onLineUsers()
 	  {
 	    var userstring = '<li class="chatuser" id="chatuser_'+this.user_id+'" user-color="'+this.color+'" user-id="'+this.user_id+'" login-id="'+this.login+'"><a href="/users/'+this.login+'">';
 	    
-	    if(this.on_chat == 1)
+	    if(this.config.mobile == true)
 	    {
-	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/online.png">';
+	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/onphone.png">';
 	    }
-	    else
+	    else 
 	    {
-	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/offline.png">';
+	      if(this.on_chat == 1)
+	      {
+		userstring += '<img class="activestatus" src="/components/ajaxchat/img/online.png">';
+	      }
+	      else
+	      {
+		userstring += '<img class="activestatus" src="/components/ajaxchat/img/offline.png">';
+	      }
 	    }
 	    
 	    userstring += '<img src="/images/users/avatars/small/'+this.imageurl+'">'+this.nickname+'</a><div class="iconsright"><img class="startdialog"src="/components/ajaxchat/img/start-dialog.png"><img class="sendpublic" title="Отправить публичное сообщение" src="/components/ajaxchat/img/send_public.png"></div></li>';
@@ -341,7 +348,11 @@ function onLineUsers()
 	  }
 	  else
 	  {
-	    if(this.on_chat == 1)
+	    if(this.config.mobile == true)
+	    {
+	      $("#chatuser_"+this.user_id+" IMG.activestatus").attr("src","/components/ajaxchat/img/onphone.png");
+	    }
+	    else if(this.on_chat == 1)
 	    {
 	      $("#chatuser_"+this.user_id+" IMG.activestatus").attr("src","/components/ajaxchat/img/online.png");
 	    }
