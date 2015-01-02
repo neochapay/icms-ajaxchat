@@ -551,7 +551,7 @@ function formatMessage(mess)
       var cls = "";
     }
     
-    var str = "<li"+cls+" id=\"mess_"+mess.id+"\" style=\"color:"+mess.color+"\"><tt>"+mess.time+"</tt> <b"; 
+    var str = "<li"+cls+" id=\"mess_"+mess.id+"\" style=\"color:"+mess.message_color+"\"><tt>"+mess.time+"</tt> <b"; 
     if(mess.login)
     {
       str += " data-login='"+mess.login+"'";

@@ -419,7 +419,7 @@ class cms_model_ajaxchat
       {
 	$user[$row['user_id']] = $this->inUser->loadUser($row['user_id']);
       }
-      $row['color'] = $this->getUserColor($row['user_id']);
+      $row['message_color'] = $this->getUserColor($row['user_id']);
       $row['login'] = $user[$row['user_id']]['login'];
       $row['nickname'] = $user[$row['user_id']]['nickname'];
       $row['imageurl'] = $user[$row['user_id']]['imageurl'];      
@@ -449,7 +449,6 @@ class cms_model_ajaxchat
 	$row['message'] = str_replace("/to ".$row['to_login'],"",$row['message']);
       }
       $row['message'] = str_replace('src="/','src="http://'.$_SERVER['HTTP_HOST']."/", $row['message']);
-      $row['message_color'] = $row['color'];
       if(!$row['imageurl'] or !file($_SERVER['DOCUMENT_ROOT'].$row['imageurl']))
       {
 	$row['imageurl'] = "/images/users/avatars/small/nopic.jpg";
@@ -505,7 +504,7 @@ class cms_model_ajaxchat
       $row['login'] = $user[$row['user_id']]['login'];
       $row['nickname'] = $user[$row['user_id']]['nickname'];
       $row['imageurl'] = $user[$row['user_id']]['imageurl'];  
-      $row['color'] = $this->getUserColor($row['user_id']);
+      $row['message_color'] = $this->getUserColor($row['user_id']);
       
       preg_match_all("#\@(.*) #Uis", $row['message'], $string);
       
