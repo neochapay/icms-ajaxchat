@@ -284,12 +284,7 @@ class cms_model_ajaxchat
     }
     
     $jconfig = json_encode($config);    
-    
-    if(!$this->config['use_cron'])
-    {
-      $this->ClearOnline();
-    }
-    
+   
     $sql = "SELECT user_id FROM cms_ajaxchat_users WHERE `user_id` = $user_id";
     $result = $this->inDB->query($sql);
     
@@ -317,7 +312,6 @@ class cms_model_ajaxchat
   
   public function getOnline()
   {
-    $this->clearOnline();
     $sql = "SELECT cms_ajaxchat_users.last_action,
     cms_ajaxchat_users.user_id,
     cms_ajaxchat_users.on_chat,
@@ -373,7 +367,7 @@ class cms_model_ajaxchat
     return TRUE;     
   }
   
-  public function getMessages($skipsystem, $limit, $offset = 0)
+  public function getMessages($limit, $offset = 0)
   {      
     if(!$limit or $limit > 25)
     {
@@ -384,17 +378,19 @@ class cms_model_ajaxchat
       $limit = "$offset,$limit";
     }
     
-    if($skipsystem)
-    {
-      $apx = " WHERE cms_ajaxchat_messages.user_id <> 0 ";
-    }
-    
     $sql = "SELECT cms_ajaxchat_messages.id,
     cms_ajaxchat_messages.message,
     cms_ajaxchat_messages.time,
     cms_ajaxchat_messages.to_id,
-    cms_ajaxchat_messages.user_id
+    cms_ajaxchat_messages.user_id,
+    cms_ajaxchat_users.color as message_color,
+    cms_users.login,
+    cms_users.nickname,
+    cms_user_profiles.imageurl
     FROM cms_ajaxchat_messages
+    LEFT JOIN cms_ajaxchat_users ON cms_ajaxchat_users.user_id = cms_ajaxchat_messages.user_id
+    INNER JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
+    INNER JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id
     $apx
     GROUP BY cms_ajaxchat_messages.id
     ORDER BY cms_ajaxchat_messages.id DESC
@@ -415,15 +411,10 @@ class cms_model_ajaxchat
     while ($row = $this->inDB->fetch_assoc($result))
     {
       $row['time'] = substr($row['time'],10);
-      if(!isset($user[$row['user_id']]))
+      if(!$row['message_color'])
       {
-	$user[$row['user_id']] = $this->inUser->loadUser($row['user_id']);
-      }
-      $row['message_color'] = $this->getUserColor($row['user_id']);
-      $row['login'] = $user[$row['user_id']]['login'];
-      $row['nickname'] = $user[$row['user_id']]['nickname'];
-      $row['imageurl'] = $user[$row['user_id']]['imageurl'];      
-
+	$row['message_color'] = "#000000";
+      }  
       preg_match_all("#\@(.*) #Uis", $row['message'], $string);
 
       if(count($string[1]))
@@ -432,26 +423,14 @@ class cms_model_ajaxchat
 	{
 	  $user = $this->getUser($user_nick);
 	  $row['message'] = str_replace("@".$user_nick,'<b data-login="'.$user_nick.'">'.$user['nickname'].'</b>',$row['message']);
-	  if($user_nick == $this->inUser->login)
-	  {
-	    $row["hl"] = true;
-	  }
 	}
       }
       
-      
-      //FIXME удалить после ...
-      if($row['to_id'])
-      {
-	$to = $this->inUser->loadUser($row['to_id']);
-	$row['to_nickname'] = $to['nickname'];
-	$row['to_login'] = $to['login'];
-	$row['message'] = str_replace("/to ".$row['to_login'],"",$row['message']);
-      }
       $row['message'] = str_replace('src="/','src="http://'.$_SERVER['HTTP_HOST']."/", $row['message']);
-      if(!$row['imageurl'] or !file($_SERVER['DOCUMENT_ROOT'].$row['imageurl']))
+      $row['imageurl'] = "/images/users/avatars/small/".$row['imageurl'];
+      if(!file($_SERVER['DOCUMENT_ROOT'].$row['imageurl']))
       {
-	$row['imageurl'] = "/images/users/avatars/small/nopic.jpg";
+	$row['imageurl'] = "/images/users/avatars/small/noprofile.jpg";
       }
       $row['imageurl'] = "http://".$_SERVER['HTTP_HOST'].$row['imageurl'];
       $output[] = $row;
@@ -476,8 +455,10 @@ class cms_model_ajaxchat
     cms_ajaxchat_messages.message,
     cms_ajaxchat_messages.time,
     cms_ajaxchat_messages.to_id,
-    cms_ajaxchat_messages.user_id
+    cms_ajaxchat_messages.user_id,
+    cms_ajaxchat_users.color as message_color
     FROM cms_ajaxchat_messages
+    LEFT JOIN cms_ajaxchat_users on cms_ajaxchat_messages.user_id = cms_ajaxchat_users.user_id
     WHERE cms_ajaxchat_messages.id > $last_id
     $apx
     ORDER BY cms_ajaxchat_messages.id ASC";
@@ -504,7 +485,10 @@ class cms_model_ajaxchat
       $row['login'] = $user[$row['user_id']]['login'];
       $row['nickname'] = $user[$row['user_id']]['nickname'];
       $row['imageurl'] = $user[$row['user_id']]['imageurl'];  
-      $row['message_color'] = $this->getUserColor($row['user_id']);
+      if(!$row['message_color'])
+      {
+	$row['message_color'] = "#000000";
+      }
       
       preg_match_all("#\@(.*) #Uis", $row['message'], $string);
       
@@ -539,7 +523,7 @@ class cms_model_ajaxchat
       $row['message'] = str_replace('src="/','src="http://'.$_SERVER['HTTP_HOST']."/", $row['message']);
       if(!$row['imageurl'] or !file($_SERVER['DOCUMENT_ROOT'].$row['imageurl']))
       {
-	$row['imageurl'] = "/images/users/avatars/small/nopic.jpg";
+	$row['imageurl'] = "/images/users/avatars/small/noprofile.jpg";
       }      
       $row['imageurl'] = "http://".$_SERVER['HTTP_HOST'].$row['imageurl'];
       $output[] = $row;
@@ -685,7 +669,7 @@ class cms_model_ajaxchat
     $output = $this->inDB->fetch_assoc($result);
     if($output['imageurl'] == "")
     {
-      $output['imageurl'] = "/images/users/avatars/small/nopic.jpg";
+      $output['imageurl'] = "/images/users/avatars/small/noprofile.jpg";
     }
     else
     {

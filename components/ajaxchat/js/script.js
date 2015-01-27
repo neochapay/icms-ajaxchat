@@ -315,16 +315,18 @@ function onLineUsers()
 	  
 	  if(!this.imageurl)
 	  {
-	    this.imageurl = "nopic.jpg";
+	    this.imageurl = "noprofile.jpg";
 	  }
 
 	  if($("#chatuser_"+this.user_id).text().length == 0)
 	  {
 	    var userstring = '<li class="chatuser" id="chatuser_'+this.user_id+'" user-color="'+this.color+'" user-id="'+this.user_id+'" login-id="'+this.login+'"><a href="/users/'+this.login+'">';
-	    
-	    if(this.config.mobile == true)
+	    if(this.config)
 	    {
-	      userstring += '<img class="activestatus" src="/components/ajaxchat/img/onphone.png">';
+	      if(this.config.mobile)
+	      {
+		userstring += '<img class="activestatus" src="/components/ajaxchat/img/onphone.png">';
+	      }
 	    }
 	    else 
 	    {
@@ -348,9 +350,12 @@ function onLineUsers()
 	  }
 	  else
 	  {
-	    if(this.config.mobile == true)
+	    if(this.config)
 	    {
-	      $("#chatuser_"+this.user_id+" IMG.activestatus").attr("src","/components/ajaxchat/img/onphone.png");
+	      if(this.config.mobile == true)
+	      {
+		$("#chatuser_"+this.user_id+" IMG.activestatus").attr("src","/components/ajaxchat/img/onphone.png");
+	      }
 	    }
 	    else if(this.on_chat == 1)
 	    {
@@ -418,29 +423,32 @@ function loadNewMessages()
 	if(str.messages)
 	{
 	  $.each(str.messages,function(){
-	    if($("#mess_"+this.id).text().length == 0)
+	    if(this.id > last_id)
 	    {
-	      $("#chatLineHolder UL").append(formatMessage(this));
-	      
-	      if(on_chat == 0)
+	      if($("#mess_"+this.id).text().length == 0)
 	      {
-		newmessages_count++;
-		$('title').text("("+newmessages_count+") "+title);
-		if(this.to_id == active_user)
+		$("#chatLineHolder UL").append(formatMessage(this));
+	      
+		if(on_chat == 0)
 		{
-		  newNotify(this.message,"ajaxchat_public",this.nickname,this.imageurl)
+		  newmessages_count++;
+		  $('title').text("("+newmessages_count+") "+title);
+		  if(this.to_id == active_user)
+		  {
+		    newNotify(this.message,"ajaxchat_public",this.nickname,this.imageurl)
+		  }
 		}
-	      }
 	      
-	      if(last_id < this.id)
-	      {
-		last_id = this.id;
+		if(last_id < this.id)
+		{
+		  last_id = this.id;
+		}
+		if(this.hl)
+		{
+		  hl = 1;
+		}
+		news = 1;
 	      }
-	      if(this.hl)
-	      {
-		hl = 1;
-	      }
-	      news = 1;
 	    }
 	  });
 	
@@ -534,7 +542,7 @@ function formatMessage(mess)
 {
   if(!mess.imageurl)
   {
-    mess.imageurl = "nopic.jpg";
+    mess.imageurl = "noprofile.jpg";
   }
   if(mess.user_id == "0")
   {

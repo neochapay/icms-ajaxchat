@@ -64,7 +64,7 @@ function ajaxchat()
     
     $pagination = cmsPage::getPagebar($total, $page, 50, '/ajaxchat/history%page%.html', array());
     
-    $messages = $model->getMessages(TRUE,50,($page-1)*50);
+    $messages = $model->getMessages(50,($page-1)*50);
     $messages = array_reverse($messages);
     $smarty = cmsPage::initTemplate('components', 'com_ajaxchat_history.tpl');
     $smarty->assign('messages', $messages);
@@ -89,9 +89,11 @@ function ajaxchat()
   
   if($do == "get_userlist")
   {
-    $model->UpdateOnlineList($inUser->id);
-    $online = $model->getOnline();
-    print json_encode($online);
+    print file_get_contents($_SERVER['DOCUMENT_ROOT']."/components/ajaxchat/cache/online.cache.json");
+    if($inUser->id != 0)
+    {
+      $model->UpdateOnlineList($inUser->id);
+    }    
     exit;
   }
   
@@ -117,10 +119,7 @@ function ajaxchat()
     else
     {
       $output = array();
-      $output['skipsystem'] = $skipsystem;
-      $output['messages'] = $model->getMessages($skipsystem,$count);
-      $output['dialogs'] = $model->getDialogs($inUser->id);
-      print json_encode($output);
+      print file_get_contents($_SERVER['DOCUMENT_ROOT']."/components/ajaxchat/cache/messages.cache.json");
     }
     exit;
   }
@@ -173,6 +172,10 @@ function ajaxchat()
 	  echo "pass";
 	}
       }
+      $output['messages'] = $model->getMessages($count);
+      $output['dialogs'] = false;
+      $cache = json_encode($output);
+      file_put_contents($_SERVER['DOCUMENT_ROOT']."/components/ajaxchat/cache/messages.cache.json", $cache);
       exit;
     }
     echo "ACCESS ERROR";
@@ -183,30 +186,23 @@ function ajaxchat()
   {
     $last_id = $inCore->request('last_id', 'int');
     $dialog = $inCore->request('dialog', 'str');
-    
+   
     if($inUser->id)
     {
       $model->updateActive($inUser->id,1);
     }
-    
-    if(!$last_id)
-    {
-      $output['error'] = 1;
-      $output['error_message'] = "Неверные данные";
-    }
+   
     $skipsystem = $inCore->request('skipsystem', 'int');
     if(!$model->isBanned($inUser->id) or $inUser->is_admin)
     {
-      $output['messages'] = $model->getNewMessages($last_id,$inUser->id,$skipsystem);
-      $output['dialogs'] = $model->getDialogs($inUser->id);
-      $output['converstation'] = $model->getDialog($inUser->id,$dialog);
+      print file_get_contents($_SERVER['DOCUMENT_ROOT']."/components/ajaxchat/cache/messages.cache.json");
     }
     else
     {
       $output['error'] = 1;
       $output['error_message'] = "Вы забанены";
-    }
-    print json_encode($output);
+      print json_encode($output);
+    }    
     exit;
   }
   
@@ -314,10 +310,10 @@ function ajaxchat()
   
   if($do == "cron")
   {
-    if($cfg['use_cron'])
-    {
-      $model->ClearOnline();
-    }
+    $model->ClearOnline();
+    $online = $model->getOnline();
+    $cache = json_encode($online);
+    file_put_contents($_SERVER['DOCUMENT_ROOT']."/components/ajaxchat/cache/online.cache.json", $cache);
     exit;
   }
 }
