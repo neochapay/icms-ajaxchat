@@ -40,16 +40,18 @@
 	    {$autogrow}
             <div id="chatText" name="chatText" class="rounded" contenteditable></div>
             <input type="submit" class="blueButton" value="Отправить" onClick="sendMessage()"/>
+            <img src="/components/ajaxchat/img/insert-image.png" id="insertimage">
             <div class="sysmesc">
 	      <div class="icon on" id="sysvoice" onClick="sysMes()" title="Системные сообщения"></div>
 	      <div class="icon" id="sound" onClick="sysSound()" title="Звуки в чате"></div>
-	      <div class="icon" id="help" onClick="console.log('Помощи ждать неоткуда,а люди настроены враждебно...')" title="Помощь"></div>
 	    </div>
+	    <div id="images_container"></div>
         </div>
     </div>
 </div>
 <div align="center"><a href="/ajaxchat/history.html"><h6>история чата</h6></a></div>
 <div id="player" style="display:block;width:0px;height:0px;"></div>
 <script src="/components/ajaxchat/js/fp/fp.min.js"></script>
+<script src="/components/ajaxchat/js/ajaxupload.js"></script>
 <script src="/components/ajaxchat/js/script.js"></script>
 <script src="/components/ajaxchat/js/colorpicker.js"></script>

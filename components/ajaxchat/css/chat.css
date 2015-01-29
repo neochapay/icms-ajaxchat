@@ -61,6 +61,7 @@ overflow-x: hidden;height: 345px;
 #chatLineHolder UL LI IMG{
   max-width: 100%;
   max-height: 250px;
+  vertical-align: top;
 }
 /*Тулбар*/
 
@@ -655,3 +656,11 @@ IMG.activestatus{
   height: 16px;
 }
 
+#insertimage{
+  cursor: pointer;
+}
+
+#images_container IMG{
+  width: 150px;
+  margin: 5px;
+}

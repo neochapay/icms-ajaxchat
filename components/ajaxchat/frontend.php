@@ -316,5 +316,21 @@ function ajaxchat()
     file_put_contents($_SERVER['DOCUMENT_ROOT']."/components/ajaxchat/cache/online.cache.json", $cache);
     exit;
   }
+  
+  if($do == "img_upload")
+  {
+    require('Uploader.php');
+    $upload_dir = $_SERVER['DOCUMENT_ROOT']."/upload/userfiles/";
+    $valid_extensions = array('gif', 'png', 'jpeg', 'jpg');
+    $Upload = new FileUpload('uploadfile');
+    $result = $Upload->handleUpload($upload_dir, $valid_extensions);
+    if (!$result) 
+    {
+      echo json_encode(array('success' => false, 'msg' => $Upload->getErrorMsg()));   
+    } else {
+      echo json_encode(array('success' => true, 'file' => $Upload->getFileName()));
+    }
+    exit;
+  }
 }
 ?>
