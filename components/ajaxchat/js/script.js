@@ -69,10 +69,12 @@ $(document).on("click","#chatLineHolder LI B",function(){
       data:	'login='+login,
       success:	function(color)
       {
-	var apd = '<b contenteditable="false" style="color:'+color+'" data-login="'+$(object).attr("data-login")+'">'+$(object).text()+'</b>';
+	var apd = '<b contenteditable="false" style="color:'+color+'" data-login="'+$(object).attr("data-login")+'">'+$(object).text()+'</b> ';
 	if($("#chatText").html().indexOf(apd) === -1)
 	{
 	  $("#chatText").append(apd);
+	  el = $("#chatText").get(0);
+	  placeCaretAtEnd(el);
 	}
       }
     })
@@ -327,6 +329,14 @@ function onLineUsers()
 	      {
 		userstring += '<img class="activestatus" src="/components/ajaxchat/img/onphone.png">';
 	      }
+	      else if(this.on_chat == 1)
+	      {
+		userstring += '<img class="activestatus" src="/components/ajaxchat/img/online.png">';
+	      }
+	      else
+	      {
+		userstring += '<img class="activestatus" src="/components/ajaxchat/img/offline.png">'; 
+	      }
 	    }
 	    else 
 	    {
@@ -428,7 +438,7 @@ function loadNewMessages()
 	      if($("#mess_"+this.id).text().length == 0)
 	      {
 		$("#chatLineHolder UL").append(formatMessage(this));
-	      
+		$("#chatLineHolder").scrollTop("99999999");
 		if(on_chat == 0)
 		{
 		  newmessages_count++;
@@ -469,7 +479,6 @@ function loadNewMessages()
 	    hl = 0;
 	  }
 	  $('#flag').addClass('green');
-	  $("#chatLineHolder").scrollTop("99999999");
 	}
 	else
 	{
@@ -673,3 +682,21 @@ function newNotify(body,tag,theme,icon)
   notification = new Notification(theme, params);
   notify_count++;
 };
+
+function placeCaretAtEnd(el) {
+    el.focus();
+    if (typeof window.getSelection != "undefined"
+            && typeof document.createRange != "undefined") {
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    } else if (typeof document.body.createTextRange != "undefined") {
+        var textRange = document.body.createTextRange();
+        textRange.moveToElementText(el);
+        textRange.collapse(false);
+        textRange.select();
+    }
+}

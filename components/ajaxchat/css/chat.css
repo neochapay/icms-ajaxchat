@@ -50,6 +50,14 @@ overflow-x: hidden;height: 345px;
   cursor: pointer;
 }
 
+#chatLineHolder UL LI P{
+  display: inline;
+}
+
+#chatLineHolder UL LI P BR{ 
+  display: none;
+}
+
 #chatLineHolder UL LI IMG{
   max-width: 100%;
   max-height: 250px;
@@ -290,8 +298,8 @@ UL.pdialog LI.from_you{
 }
 
 #chatText B, #chatLineHolder UL LI B{
-  padding-right: 2px;
-  padding-left: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
 }
 
 /* Изменение стилей по умолчанию для jScrollPane */
