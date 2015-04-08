@@ -23,10 +23,16 @@ function ajaxchat()
       if(!$model->isBanned($inUser->id) or $inUser->is_admin)
       {
 	$inPage->setTitle("Чат");
-	if(!$model->CheckUser($inUser->id))
+	if(!$model->CheckOnline($inUser->id))
 	{
 	  $model->addMessage(0,0,"К чату присоединяется ".$inUser->nickname);
 	}
+	
+	$model->ClearOnline();
+	$online = $model->getOnline();
+	$cache = json_encode($online);
+	file_put_contents($_SERVER['DOCUMENT_ROOT']."/components/ajaxchat/cache/online.cache.json", $cache);
+
 	$model->updateActive($inUser->id,1);
 
 	$model->UpdateOnlineList($inUser->id);

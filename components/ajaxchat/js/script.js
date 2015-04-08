@@ -11,6 +11,9 @@ var active_user;
 var title;
 var notify_count = 0;
 var notification;
+var user_id;
+var user_login;
+var user_nickname;
 
 $(document).on("click", "a.closedialog", function() {
   $(".dialogLineHolder UL LI.new.from_him").each(function(){
@@ -54,12 +57,14 @@ $(document).on("click","IMG.sendpublic",function(){
     if($("#chatText").html().indexOf(apd) === -1)
     {
       $("#chatText").append(apd);
+      el = $("#chatText").get(0);
+      placeCaretAtEnd(el);
     }
   }
 })
 
 $(document).on("click","#chatLineHolder LI B",function(){
-  if($("LI.chatuser#chatuser_"+active_user).attr("login-id") != $(this).attr("data-login"))
+  if(user_login != $(this).attr("data-login"))
   {
     var object = this;
     var login = $(this).attr("data-login");
@@ -94,6 +99,10 @@ $(document).on("click","#chatLineHolder LI TT",function(){
     $("#"+id).addClass("fixed");
     $("#"+id).css("top",top+"px");
   }
+});
+
+$(document).on("click","#images_container IMG",function(){
+    $(this).remove();
 });
 
 $(document).on("click","#chatText B",function(){
@@ -142,6 +151,18 @@ $(document).ready(function(){
 	  data:	'status=online'
 	}) 
 	
+	$.ajax({
+	  url:	'/ajaxchat/me',
+	  type:	'post',
+	  success: function(ansver)
+	  {
+	    var user = jQuery.parseJSON(ansver);
+	    user_id = user.id;
+	    user_login = user.login;
+	    user_nickname = user.nickname;
+	  }
+	})
+	
 	onLineUsers();
 	get_messages();
 	setInterval(loadNewMessages, 5000);
@@ -184,6 +205,23 @@ $(document).ready(function(){
 	  var img = '<img class="emo_c" src="'+$(this).attr("src")+'">';
 	  $('#chatText').append(img);
 	});
+  /*UPLOADER CODE*/
+  var uploader = new ss.SimpleUpload({
+      button: 'insertimage', // HTML element used as upload button
+      url: '/ajaxchat/img_upload', // URL of server-side upload handler
+      responseType: 'json',
+      name: 'uploadfile' ,
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+      maxSize: 1024,
+      onComplete: function(filename, response) 
+      {
+	$("#images_container").append('<img src="/upload/userfiles/'+filename+'">');
+	if (!response) {
+	  alert(filename + 'upload failed');
+          return false;            
+	}
+      }
+  });
 });
 
 function get_messages()
@@ -237,6 +275,7 @@ function sendMessage()
   $('#flag').removeClass();
   $('#flag').addClass('yellow');
   var message = $("#chatText").html();
+  message += $("#images_container").html();
   var id = $(".active").attr("id");
 
   if(message.length >= 2)
@@ -244,26 +283,6 @@ function sendMessage()
     if(message == "/clean")
     {
       $("#chatLineHolder UL").html("");
-    }
-    else if(message == "/sound on")
-    {
-      sound = 1;
-    }
-    else if(message == "/sound off")
-    {
-      sound = 0;
-    }
-    else if(message == "/help")
-    {
-      $.ajax({
-	url:	"/ajaxchat/get_help",
-	type:	"post",
-	success: function(help)
-	{
-	  $("#chatLineHolder UL").append("<li>"+help+"</li>");
-	  $("#chatLineHolder").scrollTop("99999999");
-	}
-      });
     }
     else
     {
@@ -293,6 +312,7 @@ function sendMessage()
   $('#flag').removeClass();
   $('#flag').addClass('green');
   $("#chatText").html("");
+  $("#images_container").html("");
 }
 
 function onLineUsers()
@@ -559,7 +579,7 @@ function formatMessage(mess)
   }
   else
   {
-    if(mess.hl)
+    if($($.parseHTML(mess.message)).attr("data-user-id") == user_id && $($.parseHTML(mess.message)).attr("data-user-id") !== undefined)
     {
       var cls = ' class="toyou"';
     }

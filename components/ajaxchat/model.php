@@ -170,7 +170,7 @@ class cms_model_ajaxchat
   
   public function CheckOnline($user_id)
   {
-    $sql = "SELECT * FROM cms_ajaxchat_users WHERE user_id = $user_id AND online = 1";
+    $sql = "SELECT * FROM cms_ajaxchat_users WHERE user_id = $user_id AND online = 1 last_action < NOW() - INTERVAL 15 MINUTE";
     $result = $this->inDB->query($sql);
     
     if($this->inDB->error())
@@ -183,23 +183,6 @@ class cms_model_ajaxchat
       return FALSE;
     }
     return TRUE;    
-  }
-  
-  public function CheckUser($user_id)
-  {
-    $sql = "SELECT * FROM cms_ajaxchat_users WHERE user_id = $user_id AND online = 1";
-    $result = $this->inDB->query($sql);
-    
-    if($this->inDB->error())
-    {
-      return FALSE;
-    }
-    
-    if(!$this->inDB->num_rows($result))
-    {
-      return FALSE;
-    }
-    return TRUE;
   }
   
   public function totalMessages($skipsystem)
@@ -422,7 +405,7 @@ class cms_model_ajaxchat
 	foreach($string[1] as $user_nick)
 	{
 	  $user = $this->getUser($user_nick);
-	  $row['message'] = str_replace("@".$user_nick,'<b data-login="'.$user_nick.'">'.$user['nickname'].'</b>',$row['message']);
+	  $row['message'] = str_replace("@".$user_nick,'<b data-login="'.$user_nick.'" data-user-id="'.$user['id'].'">'.$user['nickname'].'</b>',$row['message']);
 	}
       }
       

@@ -88,6 +88,11 @@ function routes_ajaxchat()
     'do'    => 'read_pmessage'
   ); 
   
+  $routes[] = array(
+    '_uri'  => '/^ajaxchat\/img_upload$/i',
+    'do'    => 'img_upload'
+  );   
+  
   return $routes;
 }
 ?>
