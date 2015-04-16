@@ -276,7 +276,7 @@ function sendMessage()
   $('#flag').addClass('yellow');
   var message = $("#chatText").html();
   message += $("#images_container").html();
-  var id = $(".active").attr("id");
+  var id = $("#chatTopBar .active").attr("id");
 
   if(message.length >= 2)
   {

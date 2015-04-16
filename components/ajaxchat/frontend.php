@@ -108,6 +108,7 @@ function ajaxchat()
     $output['id'] = $inUser->id;
     $output['login'] = $inUser->login;
     $output['nickname'] = $inUser->nickname;
+    $output['click'] = "click";    
     print json_encode($output);
     exit;
   }
@@ -137,6 +138,11 @@ function ajaxchat()
       $message = $inCore->request('message', 'html','');
       
       $message = urldecode($message);
+      $message = strip_tags($message,"<img><b></b>");
+      if(strlen($message) < 2)
+      {
+	return;
+      }
       preg_match_all("#<b(.*)</b>#Uis", $message, $string);
       $i = 0;
 
