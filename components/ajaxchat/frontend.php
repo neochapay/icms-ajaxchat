@@ -108,7 +108,7 @@ function ajaxchat()
     $output['id'] = $inUser->id;
     $output['login'] = $inUser->login;
     $output['nickname'] = $inUser->nickname;
-    $output['click'] = "click";    
+    $output['config'] = $model->getUserConfig($inUser->id);
     print json_encode($output);
     exit;
   }
@@ -341,6 +341,19 @@ function ajaxchat()
       echo json_encode(array('success' => false, 'msg' => $Upload->getErrorMsg()));   
     } else {
       echo json_encode(array('success' => true, 'file' => $Upload->getFileName()));
+    }
+    exit;
+  }
+  
+  if($do == "savesmile")
+  {
+    if($inUser->id != 0)
+    {
+      $smiles = explode(",",$_POST['smiles']);
+      array_pop($smiles);
+      $config = $model->getUserConfig($inUser->id);
+      $config['smiles'] = $smiles;
+      $model->setUserConfig($inUser->id, $config);
     }
     exit;
   }

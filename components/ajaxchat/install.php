@@ -5,7 +5,7 @@
         $_component['link']         = 'ajaxchat';
         $_component['author']       = 'Сергей Игоревич (NeoChapay)';
         $_component['internal']     = '0';
-        $_component['version']      = '0.5.3';
+        $_component['version']      = '0.5.2';
         return $_component;
     }
 

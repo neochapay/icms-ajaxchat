@@ -41,6 +41,7 @@
             <div id="chatText" name="chatText" class="rounded" contenteditable></div>
             <input type="submit" class="blueButton" value="Отправить" onClick="sendMessage()"/>
             <img src="/components/ajaxchat/img/insert-image.png" id="insertimage">
+            <div id="smilecollection"></div>
             <div class="sysmesc">
 	      <div class="icon on" id="sysvoice" onClick="sysMes()" title="Системные сообщения"></div>
 	      <div class="icon" id="sound" onClick="sysSound()" title="Звуки в чате"></div>

@@ -231,7 +231,7 @@ class cms_model_ajaxchat
   
   public function updateActive($user_id,$on_chat)
   {
-    $sql = "UPDATE cms_ajaxchat_users SET `on_chat` = '$on_chat', `config` = '$jconfig' WHERE `user_id` = '$user_id'";
+    $sql = "UPDATE cms_ajaxchat_users SET `on_chat` = '$on_chat', `last_action` = NOW(), `online` = '1' WHERE `user_id` = '$user_id'";
     $result = $this->inDB->query($sql);
       
     if($this->inDB->error())
@@ -245,8 +245,29 @@ class cms_model_ajaxchat
   {
     $sql = "SELECT config FROM cms_ajaxchat_users WHERE user_id = $user_id";
     $result = $this->inDB->query($sql);
+    if(!$this->inDB->num_rows($result))
+    {
+      return false;
+    }
     $config = $this->inDB->fetch_assoc($result);
-    return json_decode($config);
+    return json_decode($config['config'], true);
+  }
+  
+  public function setUserConfig($user_id, $config)
+  {
+    $jconfig = json_encode($config);
+    $sql = "SELECT user_id FROM cms_ajaxchat_users WHERE `user_id` = $user_id";
+    $result = $this->inDB->query($sql);
+    
+    if($this->inDB->num_rows($result))
+    {
+      $sql = "UPDATE cms_ajaxchat_users SET `config` = '$jconfig' WHERE user_id = $user_id";
+    }
+    else
+    {
+      $sql = "INSERT INTO `cms_ajaxchat_users` (`user_id`, `config`) VALUES ('$user_id', '$jconfig')";
+    } 
+    $result = $this->inDB->query($sql);
   }
   
   public function UpdateOnlineList($user_id)
@@ -265,19 +286,18 @@ class cms_model_ajaxchat
     {
       $config['mobile'] = false;
     }
-    
-    $jconfig = json_encode($config);    
+    $this->setUserConfig($user_id, $config);
    
     $sql = "SELECT user_id FROM cms_ajaxchat_users WHERE `user_id` = $user_id";
     $result = $this->inDB->query($sql);
     
     if($this->inDB->num_rows($result))
     {
-      $sql = "UPDATE cms_ajaxchat_users SET last_action = NOW() , `online` = '1', `config` = '$jconfig' WHERE user_id = $user_id";
+      $sql = "UPDATE cms_ajaxchat_users SET last_action = NOW() , `online` = '1', WHERE user_id = $user_id";
     }
     else
     {
-      $sql = "INSERT INTO `cms_ajaxchat_users` (`user_id`, `last_action`, `color`, `online`, `config`) VALUES ('$user_id', NOW(), '".$this->getColor()."', '1', '$jconfig')";
+      $sql = "INSERT INTO `cms_ajaxchat_users` (`user_id`, `last_action`, `color`, `online`) VALUES ('$user_id', NOW(), '".$this->getColor()."', '1')";
     }
     
     $result = $this->inDB->query($sql);
@@ -320,7 +340,7 @@ class cms_model_ajaxchat
     {
       return false;
     }
-
+    
     $output = array();
     while ($row = $this->inDB->fetch_assoc($result))
     {

@@ -119,6 +119,28 @@ $(document).on("mouseover",".dialogLineHolder UL LI.new.from_him",function(){
   })
 });
 
+$(document).on("click","IMG.emo_s",function(){
+  var img = '<img class="emo_c" src="'+$(this).attr("src")+'">';
+  $('#chatText').append(img);
+  if(!$("#smilecollection IMG[src='"+$(this).attr("src")+"']").is("IMG"))
+  {
+    $('#smilecollection IMG:nth-child(5)').remove();
+    $('#smilecollection').prepend('<img class="emo_s" src="'+$(this).attr("src")+'">');
+    
+    var smstr = "";
+    $("#smilecollection IMG").each(function(){
+      smstr += $(this).attr("src")+",";
+    })
+    
+    $.ajax({
+      url:	'/ajaxchat/savesmile',
+      type:	'post',
+      data:	'smiles='+smstr
+    })
+    
+  }
+})
+
 $(document).ready(function(){
 	title = $('title').text();
 	$(window).blur(function() {
@@ -160,6 +182,9 @@ $(document).ready(function(){
 	    user_id = user.id;
 	    user_login = user.login;
 	    user_nickname = user.nickname;
+	    $.each(user.config.smiles,function(){
+	      $('#smilecollection').apend('<img class="emo_s" src="'+this+'">');
+	    })
 	  }
 	})
 	
@@ -200,11 +225,7 @@ $(document).ready(function(){
 	  $("#smilelist").toggle();
 	})
 	
-	$("#smilelist IMG.emo_s").click(function(){
-	  //$('#chatText').val($('#chatText').val() + ":"+$(this).attr("data-name")+":");
-	  var img = '<img class="emo_c" src="'+$(this).attr("src")+'">';
-	  $('#chatText').append(img);
-	});
+
   /*UPLOADER CODE*/
   var uploader = new ss.SimpleUpload({
       button: 'insertimage', // HTML element used as upload button
@@ -309,6 +330,7 @@ function sendMessage()
       });
     }
   }
+
   $('#flag').removeClass();
   $('#flag').addClass('green');
   $("#chatText").html("");
@@ -720,3 +742,9 @@ function placeCaretAtEnd(el) {
         textRange.select();
     }
 }
+
+if (!Array.prototype.jlast){
+    Array.prototype.jlast = function(){
+        return this[this.length - 1];
+    };
+};

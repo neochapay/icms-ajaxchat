@@ -93,6 +93,11 @@ function routes_ajaxchat()
     'do'    => 'img_upload'
   );   
   
+  $routes[] = array(
+    '_uri'  => '/^ajaxchat\/savesmile$/i',
+    'do'    => 'savesmile'
+  );
+  
   return $routes;
 }
 ?>
