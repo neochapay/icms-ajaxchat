@@ -170,7 +170,7 @@ class cms_model_ajaxchat
   
   public function CheckOnline($user_id)
   {
-    $sql = "SELECT * FROM cms_ajaxchat_users WHERE user_id = $user_id AND online = 1 last_action < NOW() - INTERVAL 15 MINUTE";
+    $sql = "SELECT * FROM cms_ajaxchat_users WHERE user_id = $user_id AND online = 1 AND last_action < NOW() - INTERVAL 15 MINUTE";
     $result = $this->inDB->query($sql);
     
     if($this->inDB->error())
@@ -293,7 +293,7 @@ class cms_model_ajaxchat
     
     if($this->inDB->num_rows($result))
     {
-      $sql = "UPDATE cms_ajaxchat_users SET last_action = NOW() , `online` = '1', WHERE user_id = $user_id";
+      $sql = "UPDATE cms_ajaxchat_users SET last_action = NOW() , `online` = '1' WHERE user_id = $user_id";
     }
     else
     {
@@ -438,9 +438,9 @@ class cms_model_ajaxchat
       $row['imageurl'] = "http://".$_SERVER['HTTP_HOST'].$row['imageurl'];
       $output[] = $row;
     }
-    return array_reverse($output);     
+    return array_reverse($output);
   }
-  
+
   public function getNewMessages($last_id,$user_id,$skipsystem)
   {
     if($this->inDB->get_last_id('cms_ajaxchat_messages') >= $last_id and $last_id != 0)

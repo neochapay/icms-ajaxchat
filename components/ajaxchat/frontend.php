@@ -191,6 +191,7 @@ function ajaxchat()
       exit;
     }
     echo "ACCESS ERROR";
+    echo $inUser->id;
     exit;
   }
   
