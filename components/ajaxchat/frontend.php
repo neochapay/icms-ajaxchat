@@ -23,9 +23,13 @@ function ajaxchat()
       if(!$model->isBanned($inUser->id) or $inUser->is_admin)
       {
 	$inPage->setTitle("Чат");
-	if(!$model->CheckOnline($inUser->id))
+	if(!$model->CheckOnline($inUser->id) and !$model->CheckDouble("0","К чату присоединяется ".$inUser->nickname,60))
 	{
-	  $model->addMessage(0,0,"К чату присоединяется ".$inUser->nickname);
+            $model->addMessage(0,0,"К чату присоединяется ".$inUser->nickname);
+            $output['messages'] = $model->getMessages($count);
+            $output['dialogs'] = false;
+            $cache = json_encode($output);
+            file_put_contents($_SERVER['DOCUMENT_ROOT']."/components/ajaxchat/cache/messages.cache.json", $cache);
 	}
 	
 	$model->ClearOnline();

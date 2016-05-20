@@ -185,6 +185,28 @@ class cms_model_ajaxchat
     return TRUE;    
   }
   
+  public function CheckDouble($user_id,$message,$min = 0)
+  {
+    if(!$min)
+    {
+        $min = 15;
+    }
+    if(!$user_id)
+    {
+        $sql = "SELECT * FROM cms_ajaxchat_messages WHERE message = '$message' AND user_id = '0' AND time > NOW() - INTERVAL $min MINUTE";
+    }
+    else
+    {
+        $sql = "SELECT * FROM cms_ajaxchat_messages WHERE message = '$message' AND user_id = '$user_id' AND time > NOW() - INTERVAL $min MINUTE";
+    }
+    $result = $this->inDB->query($sql);
+    if(!$this->inDB->num_rows($result))
+    {
+      return FALSE;
+    }
+    return TRUE;  
+  }
+  
   public function totalMessages($skipsystem)
   {
     if(!$skipsystem)
@@ -392,8 +414,8 @@ class cms_model_ajaxchat
     cms_user_profiles.imageurl
     FROM cms_ajaxchat_messages
     LEFT JOIN cms_ajaxchat_users ON cms_ajaxchat_users.user_id = cms_ajaxchat_messages.user_id
-    INNER JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
-    INNER JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id
+    LEFT JOIN cms_users ON cms_ajaxchat_messages.user_id = cms_users.id
+    LEFT JOIN cms_user_profiles ON cms_ajaxchat_messages.user_id = cms_user_profiles.user_id
     $apx
     GROUP BY cms_ajaxchat_messages.id
     ORDER BY cms_ajaxchat_messages.id DESC
