@@ -15,6 +15,10 @@ var user_id;
 var user_login;
 var user_nickname;
 
+	setInterval(loadNewMessages, 1000);
+	setInterval(onLineUsers, 1000);
+
+
 $(document).on("click", "a.closedialog", function() {
   $(".dialogLineHolder UL LI.new.from_him").each(function(){
     $(this).removeClass("new");
@@ -183,15 +187,13 @@ $(document).ready(function(){
 	    user_login = user.login;
 	    user_nickname = user.nickname;
 	    $.each(user.config.smiles,function(){
-	      $('#smilecollection').apend('<img class="emo_s" src="'+this+'">');
+	      $('#smilecollection').append('<img class="emo_s" src="'+this+'">');
 	    })
 	  }
 	})
 	
 	onLineUsers();
 	get_messages();
-	setInterval(loadNewMessages, 5000);
-	setInterval(onLineUsers, 15000);
 
 	$f("player", "/components/ajaxchat/js/fp/flowplayer-3.2.14.swf",{
 	  clip:{
